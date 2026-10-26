@@ -9,16 +9,30 @@
   * { box-sizing: border-box; }
   body { margin: 0; font-size: var(--fs-sm); line-height: 1.45; }
   button, input, select, textarea { font: inherit; color: inherit; }
+  [hidden] { display: none !important; }
+  input[type="radio"] { accent-color: var(--primary); }
+  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 
-  /* Barra superior */
-  .top { background: var(--primary); color: var(--on-primary); }
-  .top .in { display: flex; align-items: center; gap: 16px; height: 52px; }
-  .marca { font-size: var(--fs-lg); font-weight: var(--fw-semibold); }
-  .orgao { color: var(--tinta-200); padding-left: 16px; border-left: 1px solid var(--tinta-500); }
-  .quem { margin-left: auto; color: var(--tinta-100); }
-  .in { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+  /* Estrutura: menu lateral + conteúdo */
+  .app { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100vh; }
+  .menu { background: var(--primary); color: var(--tinta-100); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
+  .menu .marca { padding: 20px 20px 4px; font-size: var(--fs-lg); font-weight: var(--fw-semibold); color: var(--on-primary); }
+  .menu .orgao { padding: 0 20px 20px; color: var(--tinta-200); font-size: var(--fs-xs); border-bottom: 1px solid var(--tinta-800); }
+  .menu nav { padding: 12px 10px; display: grid; gap: 2px; }
+  .menu nav a { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm); color: var(--tinta-100); text-decoration: none; }
+  .menu nav a:hover { background: var(--tinta-800); }
+  .menu nav a[aria-current="page"] { background: var(--tinta-900); color: var(--on-primary); font-weight: var(--fw-medium); }
+  .menu nav svg { width: 16px; height: 16px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.6; }
+  .menu .conta { margin-top: auto; padding: 14px 20px 18px; border-top: 1px solid var(--tinta-800); display: grid; gap: 2px; }
+  .menu .conta b { font-weight: var(--fw-medium); color: var(--on-primary); }
+  .menu .conta span { font-size: var(--fs-xs); color: var(--tinta-200); }
+  .menu .sair { margin-top: 10px; justify-self: start; background: none; border: 1px solid var(--tinta-500); color: var(--tinta-100); border-radius: var(--radius-sm); padding: 6px 12px; cursor: pointer; }
+  .menu .sair:hover { background: var(--tinta-800); }
 
-  /* Cabeçalho da página */
+  .conteudo { padding: 0 28px 64px; min-width: 0; }
+  .vista { max-width: 1160px; }
+
+  /* Cabeçalho de página */
   .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 28px 0 16px; border-bottom: 1px solid var(--linha-forte); }
   .head h1 { margin: 0; font-size: var(--fs-xl); font-weight: var(--fw-semibold); color: var(--primary); line-height: 1.1; }
   .head p { margin: 4px 0 0; color: var(--text-muted); }
@@ -28,39 +42,77 @@
   .btn-1:hover { background: var(--primary-hover); }
   .btn-2 { background: var(--surface); border-color: var(--linha-forte); }
   .btn-2:hover { background: var(--papel-alt); }
-  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+  .link { background: none; border: 0; padding: 0; color: var(--primary); font-weight: var(--fw-medium); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 
-  /* Indicadores */
-  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); background: var(--surface); border: 1px solid var(--border); margin-top: 20px; }
-  .kpi { padding: 14px 16px; border-right: 1px solid var(--border); text-align: left; background: none; border-top: 0; border-bottom: 0; border-left: 0; cursor: pointer; }
-  .kpi:last-child { border-right: 0; }
+  .caixa { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); }
+
+  /* Indicadores, sem divisórias internas */
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); margin-top: 20px; padding: 4px; }
+  .kpi { padding: 12px 14px; text-align: left; background: none; border: 0; border-radius: var(--radius-sm); cursor: pointer; }
   .kpi:hover { background: var(--papel); }
-  .kpi[aria-pressed="true"] { box-shadow: inset 0 -2px 0 var(--primary); }
   .kpi .k { color: var(--text-muted); }
   .kpi .v { display: block; font-size: var(--fs-xl); font-weight: var(--fw-semibold); line-height: 1.2; margin-top: 2px; }
   .kpi .s { color: var(--text-muted); font-size: var(--fs-xs); }
 
-  /* Grade principal */
-  .grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); gap: 24px; margin: 24px 0 64px; }
+  /* Seções */
   h2 { font-size: var(--fs-md); font-weight: var(--fw-semibold); margin: 0; }
-  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 0; }
-  .sec-head span { color: var(--text-muted); }
-  aside section + section { margin-top: 28px; }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+  .sec-head > span { color: var(--text-muted); }
+  .bloco { margin-top: 28px; }
 
-  /* Tabela de tarefas */
-  .busca { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
-  .busca input, .busca select { border: 1px solid var(--linha-forte); border-radius: var(--radius-sm); background: var(--surface); padding: 7px 10px; }
-  .busca input { flex: 1; min-width: 180px; }
+  /* Gráficos */
+  .graficos { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 16px; margin-top: 16px; }
+  .grafico { padding: 16px 18px 18px; }
+  .grafico h2 { margin-bottom: 2px; }
+  .grafico .sub { color: var(--text-muted); margin: 0 0 14px; }
+  .legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-bottom: 14px; color: var(--grafite-700); font-size: var(--fs-xs); }
+  .legenda span { display: inline-flex; align-items: center; gap: 6px; }
+  .legenda i { width: 10px; height: 10px; border-radius: 2px; }
+
+  .barras { display: grid; gap: 14px; }
+  .barra-linha { display: grid; grid-template-columns: 110px minmax(0, 1fr) 92px; align-items: center; gap: 12px; }
+  .barra-linha .nome { color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .barra-linha .taxa { color: var(--text-muted); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .barra-linha .taxa b { color: var(--text); font-weight: var(--fw-semibold); }
+  .trilho { display: flex; gap: 2px; height: 20px; }
+  .seg { height: 100%; min-width: 4px; cursor: default; }
+  .seg:last-child { border-radius: 0 4px 4px 0; }
+  .seg:hover, .seg:focus-visible { filter: brightness(1.08); outline-offset: 1px; }
+  .eixo-x { display: grid; grid-template-columns: 110px minmax(0, 1fr) 92px; gap: 12px; margin-top: 8px; color: var(--text-muted); font-size: var(--fs-xs); font-variant-numeric: tabular-nums; }
+  .eixo-x div { display: flex; justify-content: space-between; border-top: 1px solid var(--graf-grade); padding-top: 4px; }
+
+  .colunas { position: relative; height: 168px; display: grid; grid-template-columns: repeat(7, 1fr); align-items: end; border-bottom: 1px solid var(--linha-forte); }
+  .colunas .grade { position: absolute; left: 0; right: 0; border-top: 1px solid var(--graf-grade); }
+  .col { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; cursor: default; }
+  .col .valor { font-size: var(--fs-xs); color: var(--grafite-700); font-variant-numeric: tabular-nums; margin-bottom: 4px; }
+  .col .coluna { width: 24px; max-width: 70%; background: var(--graf-serie); border-radius: 4px 4px 0 0; }
+  .col:hover .coluna, .col:focus-visible .coluna { background: var(--tinta-800); }
+  .col.zero .valor { color: var(--text-muted); }
+  .dias { display: grid; grid-template-columns: repeat(7, 1fr); margin-top: 6px; text-align: center; color: var(--text-muted); font-size: var(--fs-xs); }
+  .dias span:first-child { color: var(--text); font-weight: var(--fw-medium); }
+
+  .dica { position: fixed; z-index: 20; pointer-events: none; background: var(--grafite-900); color: var(--branco); padding: 8px 10px; border-radius: var(--radius-sm); font-size: var(--fs-xs); max-width: 240px; opacity: 0; transition: opacity .1s; }
+  .dica.on { opacity: 1; }
+  .dica strong { display: block; font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+
+  /* Tabelas */
+  .duas { display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); gap: 16px; }
   .rolagem { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; }
   th { text-align: left; font-weight: var(--fw-medium); color: var(--text-muted); background: var(--papel-alt); white-space: nowrap; }
-  td.num { white-space: nowrap; }
   th, td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
-  tr:last-child td { border-bottom: 0; }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.num { white-space: nowrap; }
   td .t { font-weight: var(--fw-medium); }
   td .d { color: var(--text-muted); font-size: var(--fs-xs); margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+  .n { text-align: right; font-variant-numeric: tabular-nums; }
   .origem { color: var(--text-muted); font-size: var(--fs-xs); }
-  .vazio { padding: 32px 12px; text-align: center; color: var(--text-muted); }
+  .vazio { padding: 28px 12px; text-align: center; color: var(--text-muted); }
+  .rolagem.caixa { overflow: hidden; overflow-x: auto; }
+
+  .busca { display: flex; gap: 8px; margin: 16px 0 12px; flex-wrap: wrap; }
+  .busca input, .busca select { border: 1px solid var(--linha-forte); border-radius: var(--radius-sm); background: var(--surface); padding: 7px 10px; }
+  .busca input { flex: 1; min-width: 180px; }
 
   .tag { display: inline-block; padding: 2px 7px; border-radius: var(--radius-sm); font-size: var(--fs-xs); font-weight: var(--fw-medium); white-space: nowrap; }
   .st-aberta { color: var(--status-aberta); background: var(--status-aberta-bg); }
@@ -68,23 +120,37 @@
   .st-concluida { color: var(--status-concluida); background: var(--status-concluida-bg); }
   .st-atrasada { color: var(--status-atrasada); background: var(--status-atrasada-bg); }
   .urg { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
-  .urg i { width: 3px; height: 12px; background: currentColor; }
+  .urg i { width: 3px; height: 12px; border-radius: 1px; background: currentColor; }
   .u-baixa { color: var(--urgencia-baixa); } .u-media { color: var(--urgencia-media); } .u-alta { color: var(--urgencia-alta); }
   .prazo-atraso { color: var(--status-atrasada); font-weight: var(--fw-medium); }
 
-  /* Vencem em 24h */
-  .lista { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--border); border-top: 0; }
+  .lista { list-style: none; margin: 0; padding: 0; }
   .lista li { padding: 10px 12px; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; }
   .lista li:last-child { border-bottom: 0; }
   .lista .quando { font-weight: var(--fw-medium); font-variant-numeric: tabular-nums; }
   .lista .resp { color: var(--text-muted); grid-column: 1 / -1; }
 
-  /* Equipe */
-  .equipe { width: 100%; border-top: 0; }
-  .equipe td, .equipe th { padding: 8px 10px; }
-  .equipe .n { text-align: right; font-variant-numeric: tabular-nums; }
-  .barra { height: 4px; background: var(--papel-alt); margin-top: 6px; display: flex; }
-  .barra b { background: var(--positivo); } .barra s { background: var(--urgencia-media); } .barra u { background: var(--linha-forte); }
+  /* Por funcionário */
+  .equipe-tab tbody tr { cursor: pointer; }
+  .equipe-tab tbody tr:hover td { background: var(--papel); }
+  .equipe-tab tbody tr[aria-selected="true"] td { background: var(--tinta-100); }
+  .equipe-tab tbody tr[aria-selected="true"] td:first-child { font-weight: var(--fw-medium); }
+  .resumo { display: grid; grid-template-columns: repeat(5, 1fr); padding: 4px; margin-bottom: 16px; }
+  .resumo div { padding: 10px 14px; }
+  .resumo .k { color: var(--text-muted); display: block; }
+  .resumo .v { font-size: var(--fs-lg); font-weight: var(--fw-semibold); }
+
+  /* Entrar */
+  .entrar { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; }
+  .entrar .cartao { width: min(420px, 100%); padding: 28px; }
+  .entrar h1 { margin: 0; font-size: var(--fs-xl); font-weight: var(--fw-semibold); color: var(--primary); }
+  .entrar p { color: var(--text-muted); margin: 4px 0 20px; }
+  .perfis { display: grid; gap: 8px; margin-bottom: 20px; }
+  .perfil { display: grid; grid-template-columns: auto 1fr; gap: 0 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--linha-forte); border-radius: var(--radius-sm); cursor: pointer; background: var(--branco); }
+  .perfil small { grid-column: 2; color: var(--text-muted); }
+  .perfil:has(input:checked) { border-color: var(--primary); background: var(--tinta-100); }
+  .perfil:has(input:disabled) { cursor: not-allowed; opacity: .6; }
+  .entrar .btn { width: 100%; padding: 10px; }
 
   /* Painel de cadastro */
   dialog { border: 0; padding: 0; margin: 0 0 0 auto; height: 100%; max-height: none; width: min(460px, 100%); background: var(--surface); color: var(--text); border-left: 1px solid var(--linha-forte); }
@@ -95,7 +161,6 @@
   .d-body { padding: 20px; overflow: auto; flex: 1; display: grid; gap: 16px; align-content: start; }
   .d-foot { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; background: var(--papel); }
   label { display: grid; gap: 6px; font-weight: var(--fw-medium); }
-  label small { font-weight: var(--fw-regular); color: var(--text-muted); }
   .campo { border: 1px solid var(--linha-forte); border-radius: var(--radius-sm); padding: 8px 10px; background: var(--branco); font-weight: var(--fw-regular); width: 100%; }
   textarea.campo { resize: vertical; min-height: 84px; }
   .dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -112,78 +177,165 @@
   .erro { color: var(--status-atrasada); font-weight: var(--fw-regular); font-size: var(--fs-xs); display: none; }
   .invalido .campo { border-color: var(--status-atrasada); }
   .invalido .erro { display: block; }
-  .x { background: none; border: 0; font-size: 20px; line-height: 1; cursor: pointer; color: var(--text-muted); padding: 4px 8px; }
+  .x { background: none; border: 0; font-size: 20px; line-height: 1; cursor: pointer; color: var(--text-muted); padding: 4px 8px; border-radius: var(--radius-sm); }
 
-  .aviso { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--grafite-900); color: var(--branco); padding: 10px 16px; border-radius: var(--radius-md); opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .aviso { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--grafite-900); color: var(--branco); padding: 10px 16px; border-radius: var(--radius-md); opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 30; }
   .aviso.on { opacity: 1; }
 
-  @media (max-width: 900px) {
-    .grid { grid-template-columns: 1fr; }
-    .kpis { grid-template-columns: repeat(3, 1fr); }
-    .kpi:nth-child(3) { border-right: 0; }
-    .kpi:nth-child(n+4) { border-top: 1px solid var(--border); }
+  @media (max-width: 1040px) {
+    .graficos, .duas { grid-template-columns: 1fr; }
   }
-  @media (max-width: 600px) {
-    .orgao, .quem { display: none; }
+  @media (max-width: 960px) {
+    .kpis, .resumo { grid-template-columns: repeat(3, 1fr); }
+    .kpis .kpi:last-child, .resumo div:last-child { grid-column: span 2; }
+  }
+  @media (max-width: 800px) {
+    .app { grid-template-columns: 1fr; }
+    .menu { position: static; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; }
+    .menu .marca { padding: 12px 16px; }
+    .menu .orgao { display: none; }
+    .menu nav { display: flex; overflow-x: auto; padding: 0 8px 8px; width: 100%; order: 3; }
+    .menu nav a { white-space: nowrap; }
+    .menu .conta { margin: 0 0 0 auto; border: 0; padding: 8px 16px; }
+    .menu .conta b, .menu .conta span { display: none; }
+    .menu .sair { margin: 0; }
+    .conteudo { padding: 0 16px 48px; }
     .head { flex-direction: column; align-items: stretch; }
-    .kpis { grid-template-columns: 1fr 1fr; }
-    .kpi:nth-child(3) { border-right: 1px solid var(--border); }
-    .kpi:nth-child(2n) { border-right: 0; }
-    .kpi:nth-child(n+3) { border-top: 1px solid var(--border); }
-    .kpi:last-child { grid-column: 1 / -1; }
+    .kpis, .resumo { grid-template-columns: 1fr 1fr; }
+    .kpis .kpi:last-child { grid-column: 1 / -1; }
+    .barra-linha, .eixo-x { grid-template-columns: 72px minmax(0, 1fr) 44px; gap: 8px; }
+    .barra-linha .taxa span { display: none; }
     .col-origem, .col-urg { display: none; }
     .dupla { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
-<div class="top">
-  <div class="in">
-    <span class="marca">Pauta</span>
-    <span class="orgao">Prefeitura de Exemplo · Secretaria de Obras</span>
-    <span class="quem">Roberto Lima, secretário</span>
-  </div>
-</div>
 
-<main class="in">
-  <div class="head">
-    <div>
-      <h1>Painel da equipe</h1>
-      <p id="hoje"></p>
+<!-- Entrar: login simplificado com seletor de usuário -->
+<section class="entrar" id="tela-entrar" hidden>
+  <form class="cartao caixa" id="form-entrar">
+    <h1>Pauta</h1>
+    <p>Escolha o perfil para entrar.</p>
+    <div class="perfis" id="perfis"></div>
+    <button class="btn btn-1" type="submit">Entrar</button>
+  </form>
+</section>
+
+<div class="app" id="app">
+  <aside class="menu">
+    <div class="marca">Pauta</div>
+    <div class="orgao">Prefeitura de Exemplo<br>Secretaria de Obras</div>
+    <nav aria-label="Navegação principal">
+      <a href="#painel" data-vista="painel">
+        <svg viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+        Painel geral</a>
+      <a href="#tarefas" data-vista="tarefas">
+        <svg viewBox="0 0 16 16"><path d="M6 4h8M6 8h8M6 12h8"/><path d="M2 4h1M2 8h1M2 12h1"/></svg>
+        Tarefas</a>
+      <a href="#funcionarios" data-vista="funcionarios">
+        <svg viewBox="0 0 16 16"><circle cx="6" cy="5.5" r="2.5"/><path d="M1.5 14c.5-2.8 2.2-4 4.5-4s4 1.2 4.5 4"/><path d="M11 3.2a2.4 2.4 0 0 1 0 4.6M12.5 10.3c1.2.5 1.9 1.7 2 3.7"/></svg>
+        Por funcionário</a>
+    </nav>
+    <div class="conta">
+      <b id="conta-nome"></b>
+      <span id="conta-papel"></span>
+      <button class="sair" id="sair">Sair</button>
     </div>
-    <button class="btn btn-1" id="nova">Nova tarefa</button>
-  </div>
+  </aside>
 
-  <div class="kpis" id="kpis"></div>
+  <main class="conteudo">
+    <!-- Painel geral -->
+    <section class="vista" id="vista-painel">
+      <div class="head">
+        <div><h1>Painel geral</h1><p class="hoje"></p></div>
+        <button class="btn btn-1" data-nova>Nova tarefa</button>
+      </div>
 
-  <div class="grid">
-    <section>
-      <div class="sec-head"><h2 id="titulo-lista">Todas as tarefas</h2><span id="contagem"></span></div>
+      <div class="kpis caixa" id="kpis"></div>
+
+      <div class="graficos">
+        <section class="grafico caixa" aria-labelledby="g1-t">
+          <h2 id="g1-t">Entregas por funcionário</h2>
+          <p class="sub">Todas as tarefas de cada pessoa, pela situação do prazo</p>
+          <div class="legenda">
+            <span><i style="background:var(--graf-prazo)"></i>Concluída no prazo</span>
+            <span><i style="background:var(--graf-atraso)"></i>Concluída com atraso</span>
+            <span><i style="background:var(--graf-aberta)"></i>Em aberto</span>
+            <span><i style="background:var(--graf-vencida)"></i>Atrasada</span>
+          </div>
+          <div class="barras" id="g-entregas"></div>
+          <div class="eixo-x" id="g-entregas-eixo"></div>
+        </section>
+
+        <section class="grafico caixa" aria-labelledby="g2-t">
+          <h2 id="g2-t">Prazos dos próximos 7 dias</h2>
+          <p class="sub">Tarefas em aberto que vencem em cada dia</p>
+          <div class="colunas" id="g-prazos"></div>
+          <div class="dias" id="g-prazos-dias"></div>
+        </section>
+      </div>
+
+      <div class="duas bloco">
+        <section>
+          <div class="sec-head"><h2>Próximas tarefas</h2><button class="link" data-ir="tarefas">Ver todas</button></div>
+          <div class="rolagem caixa"><table>
+            <thead><tr><th>Tarefa</th><th>Responsável</th><th>Prazo</th><th>Status</th></tr></thead>
+            <tbody id="proximas"></tbody>
+          </table></div>
+        </section>
+        <section>
+          <div class="sec-head"><h2>Vencem nas próximas 24 horas</h2></div>
+          <ul class="lista caixa" id="vencem"></ul>
+        </section>
+      </div>
+    </section>
+
+    <!-- Tarefas -->
+    <section class="vista" id="vista-tarefas" hidden>
+      <div class="head">
+        <div><h1>Tarefas</h1><p id="contagem"></p></div>
+        <button class="btn btn-1" data-nova>Nova tarefa</button>
+      </div>
       <div class="busca">
         <input type="search" id="q" placeholder="Buscar por título" aria-label="Buscar por título">
+        <select id="f-status" aria-label="Filtrar por status">
+          <option value="todas">Todos os status</option>
+          <option value="aberta">Abertas</option>
+          <option value="andamento">Em andamento</option>
+          <option value="concluida">Concluídas</option>
+          <option value="atrasada">Atrasadas</option>
+        </select>
         <select id="f-resp" aria-label="Filtrar por responsável"><option value="">Todos os responsáveis</option></select>
       </div>
-      <div class="rolagem"><table>
+      <div class="rolagem caixa"><table>
         <thead><tr><th>Tarefa</th><th>Responsável</th><th>Prazo</th><th class="col-urg">Urgência</th><th>Status</th><th class="col-origem">Origem</th></tr></thead>
         <tbody id="tarefas"></tbody>
       </table></div>
     </section>
 
-    <aside>
-      <section>
-        <div class="sec-head"><h2>Vencem nas próximas 24 horas</h2></div>
-        <ul class="lista" id="vencem"></ul>
-      </section>
-      <section>
-        <div class="sec-head"><h2>Entregas por funcionário</h2></div>
-        <table class="equipe">
-          <thead><tr><th>Nome</th><th class="n">No prazo</th><th class="n">Atraso</th><th class="n">Pend.</th><th class="n">Taxa</th></tr></thead>
-          <tbody id="equipe"></tbody>
-        </table>
-      </section>
-    </aside>
-  </div>
-</main>
+    <!-- Por funcionário -->
+    <section class="vista" id="vista-funcionarios" hidden>
+      <div class="head">
+        <div><h1>Por funcionário</h1><p>Selecione uma pessoa para ver as tarefas dela.</p></div>
+        <button class="btn btn-1" data-nova>Nova tarefa</button>
+      </div>
+      <div class="rolagem caixa" style="margin-top:20px"><table class="equipe-tab">
+        <thead><tr><th>Nome</th><th class="n">No prazo</th><th class="n">Com atraso</th><th class="n">Em aberto</th><th class="n">Atrasadas</th><th class="n">Cumprimento</th></tr></thead>
+        <tbody id="equipe"></tbody>
+      </table></div>
+
+      <div class="bloco">
+        <div class="sec-head"><h2 id="func-nome"></h2><span id="func-contagem"></span></div>
+        <div class="resumo caixa" id="func-resumo"></div>
+        <div class="rolagem caixa"><table>
+          <thead><tr><th>Tarefa</th><th>Prazo</th><th class="col-urg">Urgência</th><th>Status</th><th class="col-origem">Origem</th></tr></thead>
+          <tbody id="func-tarefas"></tbody>
+        </table></div>
+      </div>
+    </section>
+  </main>
+</div>
 
 <dialog id="painel" aria-labelledby="painel-titulo">
   <form id="form" novalidate>
@@ -227,6 +379,7 @@
   </form>
 </dialog>
 
+<div class="dica" id="dica" role="tooltip"></div>
 <div class="aviso" id="aviso" role="status"></div>
 
 <script>
@@ -236,11 +389,13 @@
   const dia = (dias, hora) => { const d = new Date(agora); d.setDate(d.getDate() + dias); d.setHours(hora, 0, 0, 0); return d.toISOString(); };
   const horaCheia = (horas) => { const d = new Date(agora + horas * H); d.setMinutes(0, 0, 0); return d.toISOString(); };
 
-  const equipe = [
-    { id: "u1", nome: "Carlos Mendes" },
-    { id: "u2", nome: "Ana Souza" },
-    { id: "u3", nome: "Bruno Alves" },
+  const usuarios = [
+    { id: "g1", nome: "Roberto Lima", papel: "gestor", cargo: "Secretário de Obras" },
+    { id: "u1", nome: "Carlos Mendes", papel: "funcionario", cargo: "Engenheiro civil" },
+    { id: "u2", nome: "Ana Souza", papel: "funcionario", cargo: "Técnica de planejamento" },
+    { id: "u3", nome: "Bruno Alves", papel: "funcionario", cargo: "Fiscal de obras" },
   ];
+  const equipe = usuarios.filter(u => u.papel === "funcionario");
 
   // Dados de exemplo, com prazos relativos a agora
   let tarefas = [
@@ -254,27 +409,41 @@
     { id: 8, titulo: "Resposta à ouvidoria, protocolo 3321", descricao: "Morador relata calçada danificada na Rua das Flores.", responsavelId: "u2", prazo: dia(-3, 18), urgencia: "", status: "concluida", concluidaEm: dia(-4, 10), origem: "whatsapp" },
     { id: 9, titulo: "Inventário de máquinas do pátio", descricao: "Conferir estado e horas de uso das retroescavadeiras.", responsavelId: "u3", prazo: dia(-8, 18), urgencia: "baixa", status: "concluida", concluidaEm: dia(-7, 9), origem: "web" },
     { id: 10, titulo: "Apresentação para a Câmara", descricao: "Slides sobre o plano de drenagem 2027.", responsavelId: "u1", prazo: dia(6, 9), urgencia: "media", status: "aberta", origem: "web" },
+    { id: 11, titulo: "Relatório mensal da frota", descricao: "Consumo de combustível e manutenções de outubro.", responsavelId: "u2", prazo: dia(2, 12), urgencia: "", status: "andamento", origem: "web" },
+    { id: 12, titulo: "Notificação de obra irregular", descricao: "Lote 14 da Rua Ipê, sem alvará.", responsavelId: "u3", prazo: dia(2, 17), urgencia: "alta", status: "aberta", origem: "whatsapp" },
+    { id: 13, titulo: "Reunião com associação de moradores", descricao: "Apresentar cronograma de drenagem do Jardim Sul.", responsavelId: "u1", prazo: dia(3, 10), urgencia: "media", status: "aberta", origem: "whatsapp" },
+    { id: 14, titulo: "Medição da obra da creche municipal", descricao: "Conferir boletim de medição da construtora.", responsavelId: "u3", prazo: dia(-10, 18), urgencia: "", status: "concluida", concluidaEm: dia(-9, 16), origem: "web" },
+    { id: 15, titulo: "Atualizar portal da transparência", descricao: "Publicar contratos de setembro.", responsavelId: "u2", prazo: dia(-9, 18), urgencia: "baixa", status: "concluida", concluidaEm: dia(-9, 11), origem: "web" },
   ];
 
+  let usuarioAtual = usuarios[0];
+  let funcSelecionado = equipe[0].id;
+
   const atrasada = (t) => t.status !== "concluida" && new Date(t.prazo) < Date.now();
-  const nomeDe = (id) => equipe.find(e => e.id === id)?.nome ?? "—";
+  const noPrazo = (t) => t.status === "concluida" && new Date(t.concluidaEm) <= new Date(t.prazo);
+  const nomeDe = (id) => usuarios.find(e => e.id === id)?.nome ?? "—";
   const primeiroNome = (id) => nomeDe(id).split(" ")[0];
-  const esc = (s) => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const nomeCurto = (nome) => { const [a, b] = nome.split(" "); return b ? `${a} ${b[0]}.` : a; };
+  const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const porPrazo = (a, b) => (a.status === "concluida") - (b.status === "concluida") || new Date(a.prazo) - new Date(b.prazo);
+  const plural = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
 
   const fmtData = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit" });
   const fmtHora = new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit" });
   const fmtHoje = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const fmtSemana = new Intl.DateTimeFormat("pt-BR", { weekday: "short" });
+  const fmtDiaLongo = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "2-digit", month: "2-digit" });
 
   const STATUS = { aberta: "Aberta", andamento: "Em andamento", concluida: "Concluída" };
   const URG = { baixa: "Baixa", media: "Média", alta: "Alta" };
-
-  let filtro = "todas";
 
   function statusTag(t) {
     if (atrasada(t)) return `<span class="tag st-atrasada">Atrasada</span>`;
     return `<span class="tag st-${t.status}">${STATUS[t.status]}</span>`;
   }
-
+  function urgTag(t) {
+    return t.urgencia ? `<span class="urg u-${t.urgencia}"><i></i>${URG[t.urgencia]}</span>` : `<span class="origem">—</span>`;
+  }
   function prazoTexto(t) {
     const d = new Date(t.prazo);
     const dif = d - Date.now();
@@ -284,107 +453,228 @@
     }
     return fmtData.format(d);
   }
+  function filtrar(lista, filtro) {
+    if (filtro === "todas") return lista;
+    if (filtro === "atrasada") return lista.filter(atrasada);
+    return lista.filter(t => t.status === filtro && !atrasada(t));
+  }
 
+  function resumoDe(lista) {
+    const concl = lista.filter(t => t.status === "concluida");
+    const ok = concl.filter(noPrazo).length;
+    return {
+      total: lista.length,
+      noPrazo: ok,
+      comAtraso: concl.length - ok,
+      emAberto: lista.filter(t => t.status !== "concluida" && !atrasada(t)).length,
+      atrasadas: lista.filter(atrasada).length,
+      taxa: concl.length ? Math.round(ok / concl.length * 100) : null,
+      concluidas: concl.length,
+    };
+  }
+
+  /* Painel geral */
   function renderKpis() {
-    const n = (f) => tarefas.filter(f).length;
-    const concl = tarefas.filter(t => t.status === "concluida");
-    const noPrazo = concl.filter(t => new Date(t.concluidaEm) <= new Date(t.prazo)).length;
-    const taxa = concl.length ? Math.round(noPrazo / concl.length * 100) : 0;
+    const r = resumoDe(tarefas);
     const itens = [
-      { f: "aberta", k: "Abertas", v: n(t => t.status === "aberta" && !atrasada(t)) },
-      { f: "andamento", k: "Em andamento", v: n(t => t.status === "andamento" && !atrasada(t)) },
-      { f: "concluida", k: "Concluídas", v: concl.length },
-      { f: "atrasada", k: "Atrasadas", v: n(atrasada), cor: "var(--status-atrasada)" },
-      { f: "todas", k: "Cumprimento de prazo", v: taxa + "%", s: `${noPrazo} de ${concl.length} no prazo`, cor: "var(--positivo)" },
+      { f: "aberta", k: "Abertas", v: filtrar(tarefas, "aberta").length },
+      { f: "andamento", k: "Em andamento", v: filtrar(tarefas, "andamento").length },
+      { f: "concluida", k: "Concluídas", v: r.concluidas },
+      { f: "atrasada", k: "Atrasadas", v: r.atrasadas, cor: "var(--status-atrasada)" },
+      { f: "concluida", k: "Cumprimento de prazo", v: (r.taxa ?? 0) + "%", s: `${r.noPrazo} de ${r.concluidas} no prazo`, cor: "var(--positivo)" },
     ];
     document.getElementById("kpis").innerHTML = itens.map(i => `
-      <button class="kpi" data-f="${i.f}" aria-pressed="${filtro === i.f && i.f !== "todas"}">
+      <button class="kpi" data-f="${i.f}" title="Ver na lista de tarefas">
         <span class="k">${i.k}</span>
-        <span class="v num" ${i.cor ? `style="color:${i.cor}"` : ""}>${i.v}</span>
+        <span class="v" ${i.cor ? `style="color:${i.cor}"` : ""}>${i.v}</span>
         ${i.s ? `<span class="s">${i.s}</span>` : ""}
       </button>`).join("");
   }
 
-  function renderTarefas() {
-    const q = document.getElementById("q").value.trim().toLowerCase();
-    const resp = document.getElementById("f-resp").value;
-    const lista = tarefas
-      .filter(t => filtro === "todas" || (filtro === "atrasada" ? atrasada(t) : t.status === filtro && !atrasada(t)))
-      .filter(t => !q || t.titulo.toLowerCase().includes(q))
-      .filter(t => !resp || t.responsavelId === resp)
-      .sort((a, b) => (a.status === "concluida") - (b.status === "concluida") || new Date(a.prazo) - new Date(b.prazo));
+  function renderEntregas() {
+    const dados = equipe.map(e => ({ e, r: resumoDe(tarefas.filter(t => t.responsavelId === e.id)) }));
+    const max = Math.max(...dados.map(d => d.r.total), 1);
+    const passo = max <= 6 ? 1 : max <= 12 ? 2 : 5;
+    const topo = Math.ceil(max / passo) * passo;
+    const segs = [
+      ["noPrazo", "var(--graf-prazo)", "Concluídas no prazo"],
+      ["comAtraso", "var(--graf-atraso)", "Concluídas com atraso"],
+      ["emAberto", "var(--graf-aberta)", "Em aberto"],
+      ["atrasadas", "var(--graf-vencida)", "Atrasadas"],
+    ];
+    document.getElementById("g-entregas").innerHTML = dados.map(({ e, r }) => `
+      <div class="barra-linha">
+        <span class="nome" title="${esc(e.nome)}">${esc(nomeCurto(e.nome))}</span>
+        <div class="trilho" style="width:${r.total / topo * 100}%">
+          ${segs.filter(([k]) => r[k]).map(([k, cor, rot]) => `<span class="seg" tabindex="0" style="flex:${r[k]};background:${cor}"
+            data-dica-v="${plural(r[k], "tarefa", "tarefas")}" data-dica-r="${esc(e.nome.split(" ")[0])} · ${rot}" aria-label="${esc(e.nome)}: ${r[k]} ${rot.toLowerCase()}"></span>`).join("")}
+        </div>
+        <span class="taxa">${r.taxa === null ? "—" : `<b>${r.taxa}%</b>`}<span> no prazo</span></span>
+      </div>`).join("");
+    const ticks = Array.from({ length: topo / passo + 1 }, (_, i) => `<span>${i * passo}</span>`).join("");
+    document.getElementById("g-entregas-eixo").innerHTML = `<span></span><div>${ticks}</div><span></span>`;
+  }
 
-    const titulos = { todas: "Todas as tarefas", aberta: "Tarefas abertas", andamento: "Tarefas em andamento", concluida: "Tarefas concluídas", atrasada: "Tarefas atrasadas" };
-    document.getElementById("titulo-lista").textContent = titulos[filtro];
-    document.getElementById("contagem").textContent = `${lista.length} ${lista.length === 1 ? "tarefa" : "tarefas"}`;
+  function renderPrazos() {
+    const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    const dias = Array.from({ length: 7 }, (_, i) => { const d = new Date(hoje); d.setDate(d.getDate() + i); return d; });
+    const abertas = tarefas.filter(t => t.status !== "concluida" && !atrasada(t));
+    const dados = dias.map(d => ({ d, lista: abertas.filter(t => new Date(t.prazo).toDateString() === d.toDateString()) }));
+    const topo = Math.max(2, ...dados.map(x => x.lista.length));
+    const grades = Array.from({ length: topo }, (_, i) => `<div class="grade" style="bottom:${(i + 1) / topo * 100}%"></div>`).join("");
+    document.getElementById("g-prazos").innerHTML = grades + dados.map(({ d, lista }, i) => {
+      const n = lista.length;
+      const titulos = lista.map(t => esc(t.titulo)).join(" · ");
+      return `<div class="col ${n ? "" : "zero"}" tabindex="0"
+        data-dica-v="${plural(n, "tarefa", "tarefas")}" data-dica-r="${i === 0 ? "Hoje" : esc(fmtDiaLongo.format(d))}${titulos ? " · " + titulos : ""}"
+        aria-label="${esc(fmtDiaLongo.format(d))}: ${plural(n, "tarefa", "tarefas")}">
+        <span class="valor">${n}</span>
+        ${n ? `<span class="coluna" style="height:${n / topo * 100}%"></span>` : ""}
+      </div>`;
+    }).join("");
+    document.getElementById("g-prazos-dias").innerHTML = dados.map(({ d }, i) =>
+      `<span>${i === 0 ? "hoje" : fmtSemana.format(d).replace(".", "")}</span>`).join("");
+  }
 
-    document.getElementById("tarefas").innerHTML = lista.length ? lista.map(t => `
-      <tr>
-        <td><div class="t">${esc(t.titulo)}</div><div class="d">${esc(t.descricao)}</div></td>
-        <td>${primeiroNome(t.responsavelId)}</td>
-        <td class="num ${atrasada(t) ? "prazo-atraso" : ""}">${prazoTexto(t)}</td>
-        <td class="col-urg">${t.urgencia ? `<span class="urg u-${t.urgencia}"><i></i>${URG[t.urgencia]}</span>` : `<span class="origem">—</span>`}</td>
-        <td>${statusTag(t)}</td>
-        <td class="col-origem origem">${t.origem === "whatsapp" ? "WhatsApp" : "Web"}</td>
-      </tr>`).join("") : `<tr><td colspan="6" class="vazio">Nenhuma tarefa encontrada.</td></tr>`;
+  function renderProximas() {
+    const lista = tarefas.filter(t => t.status !== "concluida").sort(porPrazo).slice(0, 6);
+    document.getElementById("proximas").innerHTML = lista.map(t => `
+      <tr><td><div class="t">${esc(t.titulo)}</div></td><td>${primeiroNome(t.responsavelId)}</td>
+      <td class="num ${atrasada(t) ? "prazo-atraso" : ""}">${prazoTexto(t)}</td><td>${statusTag(t)}</td></tr>`).join("");
   }
 
   function renderVencem() {
     const lista = tarefas
       .filter(t => t.status !== "concluida")
       .filter(t => { const dif = new Date(t.prazo) - Date.now(); return dif > 0 && dif <= D; })
-      .sort((a, b) => new Date(a.prazo) - new Date(b.prazo));
+      .sort(porPrazo);
     document.getElementById("vencem").innerHTML = lista.length ? lista.map(t => `
-      <li><span>${esc(t.titulo)}</span><span class="quando">${fmtHora.format(new Date(t.prazo))}</span>
+      <li><span>${esc(t.titulo)}</span><span class="quando">${prazoTexto(t)}</span>
       <span class="resp">${nomeDe(t.responsavelId)} · ${STATUS[t.status]}</span></li>`).join("")
       : `<li class="vazio" style="display:block">Nada vence nas próximas 24 horas.</li>`;
   }
 
-  function renderEquipe() {
-    document.getElementById("equipe").innerHTML = equipe.map(e => {
-      const minhas = tarefas.filter(t => t.responsavelId === e.id);
-      const concl = minhas.filter(t => t.status === "concluida");
-      const noPrazo = concl.filter(t => new Date(t.concluidaEm) <= new Date(t.prazo)).length;
-      const comAtraso = concl.length - noPrazo;
-      const pend = minhas.length - concl.length;
-      const taxa = concl.length ? Math.round(noPrazo / concl.length * 100) + "%" : "—";
-      const tot = minhas.length || 1;
-      return `<tr>
-        <td>${e.nome}<div class="barra"><b style="width:${noPrazo / tot * 100}%"></b><s style="width:${comAtraso / tot * 100}%"></s><u style="width:${pend / tot * 100}%"></u></div></td>
-        <td class="n">${noPrazo}</td><td class="n">${comAtraso}</td><td class="n">${pend}</td><td class="n">${taxa}</td>
-      </tr>`;
-    }).join("");
+  /* Tarefas */
+  function linhaTarefa(t, comResp = true) {
+    return `<tr>
+      <td><div class="t">${esc(t.titulo)}</div><div class="d">${esc(t.descricao)}</div></td>
+      ${comResp ? `<td>${primeiroNome(t.responsavelId)}</td>` : ""}
+      <td class="num ${atrasada(t) ? "prazo-atraso" : ""}">${prazoTexto(t)}</td>
+      <td class="col-urg">${urgTag(t)}</td>
+      <td>${statusTag(t)}</td>
+      <td class="col-origem origem">${t.origem === "whatsapp" ? "WhatsApp" : "Web"}</td>
+    </tr>`;
   }
 
-  function render() { renderKpis(); renderTarefas(); renderVencem(); renderEquipe(); }
+  function renderTarefas() {
+    const q = document.getElementById("q").value.trim().toLowerCase();
+    const resp = document.getElementById("f-resp").value;
+    const lista = filtrar(tarefas, document.getElementById("f-status").value)
+      .filter(t => !q || t.titulo.toLowerCase().includes(q))
+      .filter(t => !resp || t.responsavelId === resp)
+      .sort(porPrazo);
+    document.getElementById("contagem").textContent = plural(lista.length, "tarefa", "tarefas");
+    document.getElementById("tarefas").innerHTML = lista.length ? lista.map(t => linhaTarefa(t)).join("")
+      : `<tr><td colspan="6" class="vazio">Nenhuma tarefa encontrada.</td></tr>`;
+  }
 
-  // Filtros
+  /* Por funcionário */
+  function renderEquipe() {
+    document.getElementById("equipe").innerHTML = equipe.map(e => {
+      const r = resumoDe(tarefas.filter(t => t.responsavelId === e.id));
+      return `<tr data-id="${e.id}" tabindex="0" aria-selected="${e.id === funcSelecionado}">
+        <td>${esc(e.nome)}<div class="origem">${esc(e.cargo)}</div></td>
+        <td class="n">${r.noPrazo}</td><td class="n">${r.comAtraso}</td><td class="n">${r.emAberto}</td>
+        <td class="n">${r.atrasadas}</td><td class="n">${r.taxa === null ? "—" : r.taxa + "%"}</td>
+      </tr>`;
+    }).join("");
+
+    const e = equipe.find(x => x.id === funcSelecionado);
+    const minhas = tarefas.filter(t => t.responsavelId === e.id).sort(porPrazo);
+    const r = resumoDe(minhas);
+    document.getElementById("func-nome").textContent = e.nome;
+    document.getElementById("func-contagem").textContent = plural(minhas.length, "tarefa", "tarefas");
+    document.getElementById("func-resumo").innerHTML = [
+      ["Em aberto", r.emAberto], ["Atrasadas", r.atrasadas], ["No prazo", r.noPrazo], ["Com atraso", r.comAtraso],
+      ["Cumprimento", r.taxa === null ? "—" : r.taxa + "%"],
+    ].map(([k, v]) => `<div><span class="k">${k}</span><span class="v">${v}</span></div>`).join("");
+    document.getElementById("func-tarefas").innerHTML = minhas.length ? minhas.map(t => linhaTarefa(t, false)).join("")
+      : `<tr><td colspan="5" class="vazio">Sem tarefas.</td></tr>`;
+  }
+
+  function render() {
+    renderKpis(); renderEntregas(); renderPrazos(); renderProximas(); renderVencem();
+    renderTarefas(); renderEquipe();
+  }
+
+  /* Navegação */
+  function mostrar(vista) {
+    if (!["painel", "tarefas", "funcionarios"].includes(vista)) vista = "painel";
+    document.querySelectorAll(".vista").forEach(v => v.hidden = v.id !== `vista-${vista}`);
+    document.querySelectorAll(".menu nav a").forEach(a => a.dataset.vista === vista ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", () => mostrar(location.hash.slice(1)));
+
   document.getElementById("kpis").addEventListener("click", (ev) => {
     const b = ev.target.closest(".kpi"); if (!b) return;
-    filtro = filtro === b.dataset.f ? "todas" : b.dataset.f;
-    render();
+    document.getElementById("f-status").value = b.dataset.f;
+    renderTarefas();
+    location.hash = "tarefas";
   });
-  document.getElementById("q").addEventListener("input", renderTarefas);
-  document.getElementById("f-resp").addEventListener("change", renderTarefas);
+  document.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => {
+    document.getElementById("f-status").value = "todas"; renderTarefas();
+    location.hash = b.dataset.ir;
+  }));
+  ["q", "f-status", "f-resp"].forEach(id => document.getElementById(id).addEventListener(id === "q" ? "input" : "change", renderTarefas));
 
-  // Cadastro
+  const tabEquipe = document.getElementById("equipe");
+  const escolher = (ev) => { const tr = ev.target.closest("tr[data-id]"); if (!tr) return; funcSelecionado = tr.dataset.id; renderEquipe(); tabEquipe.querySelector(`[data-id="${funcSelecionado}"]`).focus(); };
+  tabEquipe.addEventListener("click", escolher);
+  tabEquipe.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); escolher(ev); } });
+
+  /* Dica dos gráficos (mouse e teclado) */
+  const dica = document.getElementById("dica");
+  function abrirDica(el, x, y) {
+    dica.replaceChildren();
+    const v = document.createElement("strong"); v.textContent = el.dataset.dicaV;
+    const r = document.createElement("span"); r.textContent = el.dataset.dicaR;
+    dica.append(v, r);
+    dica.classList.add("on");
+    const w = dica.offsetWidth, h = dica.offsetHeight;
+    dica.style.left = Math.min(x + 12, innerWidth - w - 8) + "px";
+    dica.style.top = Math.max(y - h - 12, 8) + "px";
+  }
+  document.addEventListener("pointermove", (ev) => {
+    const el = ev.target.closest("[data-dica-v]");
+    if (el) abrirDica(el, ev.clientX, ev.clientY); else dica.classList.remove("on");
+  });
+  document.addEventListener("focusin", (ev) => {
+    const el = ev.target.closest("[data-dica-v]");
+    if (!el) return dica.classList.remove("on");
+    const b = el.getBoundingClientRect(); abrirDica(el, b.left + b.width / 2, b.top);
+  });
+  document.addEventListener("focusout", () => dica.classList.remove("on"));
+
+  /* Cadastro */
   const painel = document.getElementById("painel");
   const form = document.getElementById("form");
-  const opcoesEquipe = equipe.map(e => `<option value="${e.id}">${e.nome}</option>`).join("");
+  const opcoesEquipe = equipe.map(e => `<option value="${e.id}">${esc(e.nome)}</option>`).join("");
   form.responsavel.insertAdjacentHTML("beforeend", opcoesEquipe);
   document.getElementById("f-resp").insertAdjacentHTML("beforeend", opcoesEquipe);
 
   function localISO(d) { const z = new Date(d - d.getTimezoneOffset() * 6e4); return z.toISOString().slice(0, 16); }
 
-  document.getElementById("nova").addEventListener("click", () => {
+  document.querySelectorAll("[data-nova]").forEach(b => b.addEventListener("click", () => {
     form.reset();
     form.querySelectorAll(".invalido").forEach(el => el.classList.remove("invalido"));
     const amanha = new Date(Date.now() + D); amanha.setHours(18, 0, 0, 0);
     form.prazo.value = localISO(amanha);
     form.prazo.min = localISO(new Date());
+    if (!document.getElementById("vista-funcionarios").hidden) form.responsavel.value = funcSelecionado;
     painel.showModal();
     form.titulo.focus();
-  });
+  }));
   painel.addEventListener("click", (ev) => {
     if (ev.target === painel || ev.target.closest("[data-fechar]")) painel.close();
   });
@@ -412,7 +702,6 @@
       prazo: new Date(dados.prazo).toISOString(), urgencia: dados.urgencia, status: "aberta", origem: "web",
     });
     painel.close();
-    filtro = "todas";
     render();
     avisar(`Tarefa criada para ${nomeDe(dados.responsavel)}. Aviso enviado na web e no WhatsApp.`);
   });
@@ -425,9 +714,35 @@
     clearTimeout(timer); timer = setTimeout(() => a.classList.remove("on"), 3500);
   }
 
+  /* Entrar e sair */
+  const telaEntrar = document.getElementById("tela-entrar");
+  const app = document.getElementById("app");
+  document.getElementById("perfis").innerHTML = usuarios.map(u => `
+    <label class="perfil"><input type="radio" name="perfil" value="${u.id}" ${u.papel === "gestor" ? "checked" : "disabled"}>
+      <span>${esc(u.nome)}</span><small>${esc(u.cargo)}${u.papel === "funcionario" ? " · quadro do funcionário em breve" : ""}</small></label>`).join("");
+
+  function entrar(u) {
+    usuarioAtual = u;
+    document.getElementById("conta-nome").textContent = u.nome;
+    document.getElementById("conta-papel").textContent = u.cargo;
+    telaEntrar.hidden = true; app.hidden = false;
+    mostrar(location.hash.slice(1));
+  }
+  document.getElementById("sair").addEventListener("click", () => {
+    app.hidden = true; telaEntrar.hidden = false;
+    telaEntrar.querySelector("input:checked")?.focus();
+  });
+  document.getElementById("form-entrar").addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    const id = new FormData(ev.target).get("perfil");
+    entrar(usuarios.find(u => u.id === id));
+    avisar(`Olá, ${usuarioAtual.nome.split(" ")[0]}.`);
+  });
+
   const hoje = fmtHoje.format(new Date());
-  document.getElementById("hoje").textContent = hoje.charAt(0).toUpperCase() + hoje.slice(1);
+  document.querySelectorAll(".hoje").forEach(p => p.textContent = hoje.charAt(0).toUpperCase() + hoje.slice(1));
   render();
+  entrar(usuarioAtual);
 </script>
 </body>
 </html>
