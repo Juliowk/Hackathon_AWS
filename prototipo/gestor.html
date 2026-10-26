@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pauta · Gestor</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-size: var(--fs-sm); line-height: 1.45; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+
+  /* Barra superior */
+  .top { background: var(--primary); color: var(--on-primary); }
+  .top .in { display: flex; align-items: center; gap: 16px; height: 52px; }
+  .marca { font-size: var(--fs-lg); font-weight: var(--fw-semibold); }
+  .orgao { color: var(--tinta-200); padding-left: 16px; border-left: 1px solid var(--tinta-500); }
+  .quem { margin-left: auto; color: var(--tinta-100); }
+  .in { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
+  /* Cabeçalho da página */
+  .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 28px 0 16px; border-bottom: 1px solid var(--linha-forte); }
+  .head h1 { margin: 0; font-size: var(--fs-xl); font-weight: var(--fw-semibold); color: var(--primary); line-height: 1.1; }
+  .head p { margin: 4px 0 0; color: var(--text-muted); }
+
+  .btn { border: 1px solid transparent; border-radius: var(--radius-sm); padding: 8px 14px; font-weight: var(--fw-medium); cursor: pointer; white-space: nowrap; }
+  .btn-1 { background: var(--primary); color: var(--on-primary); }
+  .btn-1:hover { background: var(--primary-hover); }
+  .btn-2 { background: var(--surface); border-color: var(--linha-forte); }
+  .btn-2:hover { background: var(--papel-alt); }
+  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+  /* Indicadores */
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); background: var(--surface); border: 1px solid var(--border); margin-top: 20px; }
+  .kpi { padding: 14px 16px; border-right: 1px solid var(--border); text-align: left; background: none; border-top: 0; border-bottom: 0; border-left: 0; cursor: pointer; }
+  .kpi:last-child { border-right: 0; }
+  .kpi:hover { background: var(--papel); }
+  .kpi[aria-pressed="true"] { box-shadow: inset 0 -2px 0 var(--primary); }
+  .kpi .k { color: var(--text-muted); }
+  .kpi .v { display: block; font-size: var(--fs-xl); font-weight: var(--fw-semibold); line-height: 1.2; margin-top: 2px; }
+  .kpi .s { color: var(--text-muted); font-size: var(--fs-xs); }
+
+  /* Grade principal */
+  .grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); gap: 24px; margin: 24px 0 64px; }
+  h2 { font-size: var(--fs-md); font-weight: var(--fw-semibold); margin: 0; }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 0; }
+  .sec-head span { color: var(--text-muted); }
+  aside section + section { margin-top: 28px; }
+
+  /* Tabela de tarefas */
+  .busca { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+  .busca input, .busca select { border: 1px solid var(--linha-forte); border-radius: var(--radius-sm); background: var(--surface); padding: 7px 10px; }
+  .busca input { flex: 1; min-width: 180px; }
+  .rolagem { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); }
+  th { text-align: left; font-weight: var(--fw-medium); color: var(--text-muted); background: var(--papel-alt); white-space: nowrap; }
+  td.num { white-space: nowrap; }
+  th, td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td .t { font-weight: var(--fw-medium); }
+  td .d { color: var(--text-muted); font-size: var(--fs-xs); margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+  .origem { color: var(--text-muted); font-size: var(--fs-xs); }
+  .vazio { padding: 32px 12px; text-align: center; color: var(--text-muted); }
+
+  .tag { display: inline-block; padding: 2px 7px; border-radius: var(--radius-sm); font-size: var(--fs-xs); font-weight: var(--fw-medium); white-space: nowrap; }
+  .st-aberta { color: var(--status-aberta); background: var(--status-aberta-bg); }
+  .st-andamento { color: var(--status-andamento); background: var(--status-andamento-bg); }
+  .st-concluida { color: var(--status-concluida); background: var(--status-concluida-bg); }
+  .st-atrasada { color: var(--status-atrasada); background: var(--status-atrasada-bg); }
+  .urg { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .urg i { width: 3px; height: 12px; background: currentColor; }
+  .u-baixa { color: var(--urgencia-baixa); } .u-media { color: var(--urgencia-media); } .u-alta { color: var(--urgencia-alta); }
+  .prazo-atraso { color: var(--status-atrasada); font-weight: var(--fw-medium); }
+
+  /* Vencem em 24h */
+  .lista { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--border); border-top: 0; }
+  .lista li { padding: 10px 12px; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; }
+  .lista li:last-child { border-bottom: 0; }
+  .lista .quando { font-weight: var(--fw-medium); font-variant-numeric: tabular-nums; }
+  .lista .resp { color: var(--text-muted); grid-column: 1 / -1; }
+
+  /* Equipe */
+  .equipe { width: 100%; border-top: 0; }
+  .equipe td, .equipe th { padding: 8px 10px; }
+  .equipe .n { text-align: right; font-variant-numeric: tabular-nums; }
+  .barra { height: 4px; background: var(--papel-alt); margin-top: 6px; display: flex; }
+  .barra b { background: var(--positivo); } .barra s { background: var(--urgencia-media); } .barra u { background: var(--linha-forte); }
+
+  /* Painel de cadastro */
+  dialog { border: 0; padding: 0; margin: 0 0 0 auto; height: 100%; max-height: none; width: min(460px, 100%); background: var(--surface); color: var(--text); border-left: 1px solid var(--linha-forte); }
+  dialog::backdrop { background: rgb(15 29 48 / .35); }
+  dialog form { display: flex; flex-direction: column; height: 100%; }
+  .d-head { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .d-head h2 { font-size: var(--fs-lg); }
+  .d-body { padding: 20px; overflow: auto; flex: 1; display: grid; gap: 16px; align-content: start; }
+  .d-foot { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; background: var(--papel); }
+  label { display: grid; gap: 6px; font-weight: var(--fw-medium); }
+  label small { font-weight: var(--fw-regular); color: var(--text-muted); }
+  .campo { border: 1px solid var(--linha-forte); border-radius: var(--radius-sm); padding: 8px 10px; background: var(--branco); font-weight: var(--fw-regular); width: 100%; }
+  textarea.campo { resize: vertical; min-height: 84px; }
+  .dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  fieldset { border: 0; padding: 0; margin: 0; }
+  legend { font-weight: var(--fw-medium); margin-bottom: 6px; padding: 0; }
+  legend small { font-weight: var(--fw-regular); color: var(--text-muted); }
+  .opcoes { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--linha-forte); border-radius: var(--radius-sm); overflow: hidden; }
+  .opcoes label { display: block; font-weight: var(--fw-regular); }
+  .opcoes input { position: absolute; opacity: 0; }
+  .opcoes span { display: block; text-align: center; padding: 7px 4px; border-right: 1px solid var(--linha-forte); cursor: pointer; background: var(--branco); }
+  .opcoes label:last-child span { border-right: 0; }
+  .opcoes input:checked + span { background: var(--primary); color: var(--on-primary); }
+  .opcoes input:focus-visible + span { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
+  .erro { color: var(--status-atrasada); font-weight: var(--fw-regular); font-size: var(--fs-xs); display: none; }
+  .invalido .campo { border-color: var(--status-atrasada); }
+  .invalido .erro { display: block; }
+  .x { background: none; border: 0; font-size: 20px; line-height: 1; cursor: pointer; color: var(--text-muted); padding: 4px 8px; }
+
+  .aviso { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--grafite-900); color: var(--branco); padding: 10px 16px; border-radius: var(--radius-md); opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .aviso.on { opacity: 1; }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+    .kpis { grid-template-columns: repeat(3, 1fr); }
+    .kpi:nth-child(3) { border-right: 0; }
+    .kpi:nth-child(n+4) { border-top: 1px solid var(--border); }
+  }
+  @media (max-width: 600px) {
+    .orgao, .quem { display: none; }
+    .head { flex-direction: column; align-items: stretch; }
+    .kpis { grid-template-columns: 1fr 1fr; }
+    .kpi:nth-child(3) { border-right: 1px solid var(--border); }
+    .kpi:nth-child(2n) { border-right: 0; }
+    .kpi:nth-child(n+3) { border-top: 1px solid var(--border); }
+    .kpi:last-child { grid-column: 1 / -1; }
+    .col-origem, .col-urg { display: none; }
+    .dupla { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="in">
+    <span class="marca">Pauta</span>
+    <span class="orgao">Prefeitura de Exemplo · Secretaria de Obras</span>
+    <span class="quem">Roberto Lima, secretário</span>
+  </div>
+</div>
+
+<main class="in">
+  <div class="head">
+    <div>
+      <h1>Painel da equipe</h1>
+      <p id="hoje"></p>
+    </div>
+    <button class="btn btn-1" id="nova">Nova tarefa</button>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="grid">
+    <section>
+      <div class="sec-head"><h2 id="titulo-lista">Todas as tarefas</h2><span id="contagem"></span></div>
+      <div class="busca">
+        <input type="search" id="q" placeholder="Buscar por título" aria-label="Buscar por título">
+        <select id="f-resp" aria-label="Filtrar por responsável"><option value="">Todos os responsáveis</option></select>
+      </div>
+      <div class="rolagem"><table>
+        <thead><tr><th>Tarefa</th><th>Responsável</th><th>Prazo</th><th class="col-urg">Urgência</th><th>Status</th><th class="col-origem">Origem</th></tr></thead>
+        <tbody id="tarefas"></tbody>
+      </table></div>
+    </section>
+
+    <aside>
+      <section>
+        <div class="sec-head"><h2>Vencem nas próximas 24 horas</h2></div>
+        <ul class="lista" id="vencem"></ul>
+      </section>
+      <section>
+        <div class="sec-head"><h2>Entregas por funcionário</h2></div>
+        <table class="equipe">
+          <thead><tr><th>Nome</th><th class="n">No prazo</th><th class="n">Atraso</th><th class="n">Pend.</th><th class="n">Taxa</th></tr></thead>
+          <tbody id="equipe"></tbody>
+        </table>
+      </section>
+    </aside>
+  </div>
+</main>
+
+<dialog id="painel" aria-labelledby="painel-titulo">
+  <form id="form" novalidate>
+    <div class="d-head">
+      <h2 id="painel-titulo">Nova tarefa</h2>
+      <button type="button" class="x" data-fechar aria-label="Fechar">×</button>
+    </div>
+    <div class="d-body">
+      <label data-campo="titulo">Título
+        <input class="campo" name="titulo" maxlength="120" autocomplete="off">
+        <span class="erro">Informe o título.</span>
+      </label>
+      <label data-campo="descricao">Descrição
+        <textarea class="campo" name="descricao"></textarea>
+        <span class="erro">Descreva o que precisa ser entregue.</span>
+      </label>
+      <div class="dupla">
+        <label data-campo="responsavel">Responsável
+          <select class="campo" name="responsavel"><option value="">Selecione</option></select>
+          <span class="erro">Escolha o responsável.</span>
+        </label>
+        <label data-campo="prazo">Prazo máximo
+          <input class="campo" type="datetime-local" name="prazo">
+          <span class="erro">Informe um prazo futuro.</span>
+        </label>
+      </div>
+      <fieldset>
+        <legend>Urgência <small>(opcional)</small></legend>
+        <div class="opcoes">
+          <label><input type="radio" name="urgencia" value="" checked><span>Sem</span></label>
+          <label><input type="radio" name="urgencia" value="baixa"><span>Baixa</span></label>
+          <label><input type="radio" name="urgencia" value="media"><span>Média</span></label>
+          <label><input type="radio" name="urgencia" value="alta"><span>Alta</span></label>
+        </div>
+      </fieldset>
+    </div>
+    <div class="d-foot">
+      <button type="button" class="btn btn-2" data-fechar>Cancelar</button>
+      <button type="submit" class="btn btn-1">Criar tarefa</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="aviso" id="aviso" role="status"></div>
+
+<script>
+  const H = 3600e3, D = 24 * H;
+  const agora = Date.now();
+  // Prazo em hora cheia: dias a partir de hoje + hora do dia
+  const dia = (dias, hora) => { const d = new Date(agora); d.setDate(d.getDate() + dias); d.setHours(hora, 0, 0, 0); return d.toISOString(); };
+  const horaCheia = (horas) => { const d = new Date(agora + horas * H); d.setMinutes(0, 0, 0); return d.toISOString(); };
+
+  const equipe = [
+    { id: "u1", nome: "Carlos Mendes" },
+    { id: "u2", nome: "Ana Souza" },
+    { id: "u3", nome: "Bruno Alves" },
+  ];
+
+  // Dados de exemplo, com prazos relativos a agora
+  let tarefas = [
+    { id: 1, titulo: "Relatório de obras da regional norte", descricao: "Consolidar o andamento das obras da regional norte para a reunião de secretariado.", responsavelId: "u1", prazo: dia(4, 18), urgencia: "alta", status: "andamento", origem: "whatsapp" },
+    { id: 2, titulo: "Levantamento de vias sem iluminação", descricao: "Mapear ruas sem iluminação pública no bairro Centro.", responsavelId: "u2", prazo: dia(-2, 18), urgencia: "media", status: "andamento", origem: "web" },
+    { id: 3, titulo: "Ofício para a Secretaria de Saúde", descricao: "Responder sobre a reforma da UBS Vila Nova.", responsavelId: "u3", prazo: dia(-4, 18), urgencia: "", status: "concluida", concluidaEm: dia(-5, 14), origem: "web" },
+    { id: 4, titulo: "Vistoria na ponte do córrego Fundo", descricao: "Registrar fotos e laudo preliminar.", responsavelId: "u1", prazo: horaCheia(3), urgencia: "alta", status: "aberta", origem: "whatsapp" },
+    { id: 5, titulo: "Planilha de custos de pavimentação", descricao: "Atualizar valores com a tabela SINAPI de outubro.", responsavelId: "u2", prazo: dia(1, 11), urgencia: "baixa", status: "andamento", origem: "web" },
+    { id: 6, titulo: "Cronograma de tapa-buracos", descricao: "Definir roteiro das equipes para novembro.", responsavelId: "u3", prazo: dia(-1, 12), urgencia: "media", status: "aberta", origem: "whatsapp" },
+    { id: 7, titulo: "Parecer sobre licitação 014/2026", descricao: "Revisar documentação das três empresas habilitadas.", responsavelId: "u1", prazo: dia(-6, 18), urgencia: "", status: "concluida", concluidaEm: dia(-7, 15), origem: "web" },
+    { id: 8, titulo: "Resposta à ouvidoria, protocolo 3321", descricao: "Morador relata calçada danificada na Rua das Flores.", responsavelId: "u2", prazo: dia(-3, 18), urgencia: "", status: "concluida", concluidaEm: dia(-4, 10), origem: "whatsapp" },
+    { id: 9, titulo: "Inventário de máquinas do pátio", descricao: "Conferir estado e horas de uso das retroescavadeiras.", responsavelId: "u3", prazo: dia(-8, 18), urgencia: "baixa", status: "concluida", concluidaEm: dia(-7, 9), origem: "web" },
+    { id: 10, titulo: "Apresentação para a Câmara", descricao: "Slides sobre o plano de drenagem 2027.", responsavelId: "u1", prazo: dia(6, 9), urgencia: "media", status: "aberta", origem: "web" },
+  ];
+
+  const atrasada = (t) => t.status !== "concluida" && new Date(t.prazo) < Date.now();
+  const nomeDe = (id) => equipe.find(e => e.id === id)?.nome ?? "—";
+  const primeiroNome = (id) => nomeDe(id).split(" ")[0];
+  const esc = (s) => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  const fmtData = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit" });
+  const fmtHora = new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  const fmtHoje = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+
+  const STATUS = { aberta: "Aberta", andamento: "Em andamento", concluida: "Concluída" };
+  const URG = { baixa: "Baixa", media: "Média", alta: "Alta" };
+
+  let filtro = "todas";
+
+  function statusTag(t) {
+    if (atrasada(t)) return `<span class="tag st-atrasada">Atrasada</span>`;
+    return `<span class="tag st-${t.status}">${STATUS[t.status]}</span>`;
+  }
+
+  function prazoTexto(t) {
+    const d = new Date(t.prazo);
+    const dif = d - Date.now();
+    if (t.status !== "concluida" && dif > 0 && dif < 2 * D) {
+      const hoje = new Date().toDateString() === d.toDateString();
+      return `${hoje ? "hoje" : "amanhã"}, ${fmtHora.format(d)}`;
+    }
+    return fmtData.format(d);
+  }
+
+  function renderKpis() {
+    const n = (f) => tarefas.filter(f).length;
+    const concl = tarefas.filter(t => t.status === "concluida");
+    const noPrazo = concl.filter(t => new Date(t.concluidaEm) <= new Date(t.prazo)).length;
+    const taxa = concl.length ? Math.round(noPrazo / concl.length * 100) : 0;
+    const itens = [
+      { f: "aberta", k: "Abertas", v: n(t => t.status === "aberta" && !atrasada(t)) },
+      { f: "andamento", k: "Em andamento", v: n(t => t.status === "andamento" && !atrasada(t)) },
+      { f: "concluida", k: "Concluídas", v: concl.length },
+      { f: "atrasada", k: "Atrasadas", v: n(atrasada), cor: "var(--status-atrasada)" },
+      { f: "todas", k: "Cumprimento de prazo", v: taxa + "%", s: `${noPrazo} de ${concl.length} no prazo`, cor: "var(--positivo)" },
+    ];
+    document.getElementById("kpis").innerHTML = itens.map(i => `
+      <button class="kpi" data-f="${i.f}" aria-pressed="${filtro === i.f && i.f !== "todas"}">
+        <span class="k">${i.k}</span>
+        <span class="v num" ${i.cor ? `style="color:${i.cor}"` : ""}>${i.v}</span>
+        ${i.s ? `<span class="s">${i.s}</span>` : ""}
+      </button>`).join("");
+  }
+
+  function renderTarefas() {
+    const q = document.getElementById("q").value.trim().toLowerCase();
+    const resp = document.getElementById("f-resp").value;
+    const lista = tarefas
+      .filter(t => filtro === "todas" || (filtro === "atrasada" ? atrasada(t) : t.status === filtro && !atrasada(t)))
+      .filter(t => !q || t.titulo.toLowerCase().includes(q))
+      .filter(t => !resp || t.responsavelId === resp)
+      .sort((a, b) => (a.status === "concluida") - (b.status === "concluida") || new Date(a.prazo) - new Date(b.prazo));
+
+    const titulos = { todas: "Todas as tarefas", aberta: "Tarefas abertas", andamento: "Tarefas em andamento", concluida: "Tarefas concluídas", atrasada: "Tarefas atrasadas" };
+    document.getElementById("titulo-lista").textContent = titulos[filtro];
+    document.getElementById("contagem").textContent = `${lista.length} ${lista.length === 1 ? "tarefa" : "tarefas"}`;
+
+    document.getElementById("tarefas").innerHTML = lista.length ? lista.map(t => `
+      <tr>
+        <td><div class="t">${esc(t.titulo)}</div><div class="d">${esc(t.descricao)}</div></td>
+        <td>${primeiroNome(t.responsavelId)}</td>
+        <td class="num ${atrasada(t) ? "prazo-atraso" : ""}">${prazoTexto(t)}</td>
+        <td class="col-urg">${t.urgencia ? `<span class="urg u-${t.urgencia}"><i></i>${URG[t.urgencia]}</span>` : `<span class="origem">—</span>`}</td>
+        <td>${statusTag(t)}</td>
+        <td class="col-origem origem">${t.origem === "whatsapp" ? "WhatsApp" : "Web"}</td>
+      </tr>`).join("") : `<tr><td colspan="6" class="vazio">Nenhuma tarefa encontrada.</td></tr>`;
+  }
+
+  function renderVencem() {
+    const lista = tarefas
+      .filter(t => t.status !== "concluida")
+      .filter(t => { const dif = new Date(t.prazo) - Date.now(); return dif > 0 && dif <= D; })
+      .sort((a, b) => new Date(a.prazo) - new Date(b.prazo));
+    document.getElementById("vencem").innerHTML = lista.length ? lista.map(t => `
+      <li><span>${esc(t.titulo)}</span><span class="quando">${fmtHora.format(new Date(t.prazo))}</span>
+      <span class="resp">${nomeDe(t.responsavelId)} · ${STATUS[t.status]}</span></li>`).join("")
+      : `<li class="vazio" style="display:block">Nada vence nas próximas 24 horas.</li>`;
+  }
+
+  function renderEquipe() {
+    document.getElementById("equipe").innerHTML = equipe.map(e => {
+      const minhas = tarefas.filter(t => t.responsavelId === e.id);
+      const concl = minhas.filter(t => t.status === "concluida");
+      const noPrazo = concl.filter(t => new Date(t.concluidaEm) <= new Date(t.prazo)).length;
+      const comAtraso = concl.length - noPrazo;
+      const pend = minhas.length - concl.length;
+      const taxa = concl.length ? Math.round(noPrazo / concl.length * 100) + "%" : "—";
+      const tot = minhas.length || 1;
+      return `<tr>
+        <td>${e.nome}<div class="barra"><b style="width:${noPrazo / tot * 100}%"></b><s style="width:${comAtraso / tot * 100}%"></s><u style="width:${pend / tot * 100}%"></u></div></td>
+        <td class="n">${noPrazo}</td><td class="n">${comAtraso}</td><td class="n">${pend}</td><td class="n">${taxa}</td>
+      </tr>`;
+    }).join("");
+  }
+
+  function render() { renderKpis(); renderTarefas(); renderVencem(); renderEquipe(); }
+
+  // Filtros
+  document.getElementById("kpis").addEventListener("click", (ev) => {
+    const b = ev.target.closest(".kpi"); if (!b) return;
+    filtro = filtro === b.dataset.f ? "todas" : b.dataset.f;
+    render();
+  });
+  document.getElementById("q").addEventListener("input", renderTarefas);
+  document.getElementById("f-resp").addEventListener("change", renderTarefas);
+
+  // Cadastro
+  const painel = document.getElementById("painel");
+  const form = document.getElementById("form");
+  const opcoesEquipe = equipe.map(e => `<option value="${e.id}">${e.nome}</option>`).join("");
+  form.responsavel.insertAdjacentHTML("beforeend", opcoesEquipe);
+  document.getElementById("f-resp").insertAdjacentHTML("beforeend", opcoesEquipe);
+
+  function localISO(d) { const z = new Date(d - d.getTimezoneOffset() * 6e4); return z.toISOString().slice(0, 16); }
+
+  document.getElementById("nova").addEventListener("click", () => {
+    form.reset();
+    form.querySelectorAll(".invalido").forEach(el => el.classList.remove("invalido"));
+    const amanha = new Date(Date.now() + D); amanha.setHours(18, 0, 0, 0);
+    form.prazo.value = localISO(amanha);
+    form.prazo.min = localISO(new Date());
+    painel.showModal();
+    form.titulo.focus();
+  });
+  painel.addEventListener("click", (ev) => {
+    if (ev.target === painel || ev.target.closest("[data-fechar]")) painel.close();
+  });
+
+  form.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    const dados = Object.fromEntries(new FormData(form));
+    const regras = {
+      titulo: dados.titulo.trim(),
+      descricao: dados.descricao.trim(),
+      responsavel: dados.responsavel,
+      prazo: dados.prazo && new Date(dados.prazo) > Date.now(),
+    };
+    let primeiro = null;
+    for (const [campo, ok] of Object.entries(regras)) {
+      const el = form.querySelector(`[data-campo="${campo}"]`);
+      el.classList.toggle("invalido", !ok);
+      if (!ok && !primeiro) primeiro = form[campo];
+    }
+    if (primeiro) { primeiro.focus(); return; }
+
+    tarefas.push({
+      id: Math.max(...tarefas.map(t => t.id)) + 1,
+      titulo: regras.titulo, descricao: regras.descricao, responsavelId: dados.responsavel,
+      prazo: new Date(dados.prazo).toISOString(), urgencia: dados.urgencia, status: "aberta", origem: "web",
+    });
+    painel.close();
+    filtro = "todas";
+    render();
+    avisar(`Tarefa criada para ${nomeDe(dados.responsavel)}. Aviso enviado na web e no WhatsApp.`);
+  });
+  form.addEventListener("input", (ev) => ev.target.closest(".invalido")?.classList.remove("invalido"));
+
+  let timer;
+  function avisar(msg) {
+    const a = document.getElementById("aviso");
+    a.textContent = msg; a.classList.add("on");
+    clearTimeout(timer); timer = setTimeout(() => a.classList.remove("on"), 3500);
+  }
+
+  const hoje = fmtHoje.format(new Date());
+  document.getElementById("hoje").textContent = hoje.charAt(0).toUpperCase() + hoje.slice(1);
+  render();
+</script>
+</body>
+</html>
