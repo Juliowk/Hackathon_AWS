@@ -1,0 +1,82 @@
+/* Pauta · design tokens
+ * Fonte: Inter Tight (Google Fonts)
+ * Paleta: tinta azul de documento oficial sobre papel, com cores de carimbo
+ * para os estados. Sem gradientes, raios curtos, pesos contidos.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap");
+
+:root {
+  /* Tipografia */
+  --font-sans: "Inter Tight", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600; /* teto: títulos e números */
+
+  --fs-xs: 0.75rem;   /* 12 */
+  --fs-sm: 0.875rem;  /* 14 */
+  --fs-md: 1rem;      /* 16 */
+  --fs-lg: 1.25rem;   /* 20 */
+  --fs-xl: 1.75rem;   /* 28 */
+  --fs-2xl: 2.5rem;   /* 40 */
+
+  /* Tinta: marca, títulos, botão principal */
+  --tinta-900: #0f1d30;
+  --tinta-800: #172a45;
+  --tinta-700: #1f3a5c; /* cor da marca */
+  --tinta-500: #4a6283;
+  --tinta-200: #c9d1dc;
+  --tinta-100: #e4e8ee;
+
+  /* Papel e grafite: fundos, bordas, texto */
+  --papel:      #f6f4ef;
+  --papel-alt:  #eceae3;
+  --branco:     #fdfcfa;
+  --linha:      #d9d5cc;
+  --linha-forte:#b9b4a8;
+  --grafite-900:#1c1b19;
+  --grafite-700:#3d3b37;
+  --grafite-500:#6d6a63;
+
+  /* Estados, em cores de carimbo (texto / fundo) */
+  --status-aberta:        #3d3b37;
+  --status-aberta-bg:     #eceae3;
+  --status-andamento:     #8a5a00;
+  --status-andamento-bg:  #f4ead3;
+  --status-concluida:     #2d6340;
+  --status-concluida-bg:  #e1ebe2;
+  --status-atrasada:      #9e2a1c;
+  --status-atrasada-bg:   #f3e1dc;
+
+  /* Urgência */
+  --urgencia-baixa: #6d6a63;
+  --urgencia-media: #8a5a00;
+  --urgencia-alta:  #9e2a1c;
+
+  /* Papéis semânticos */
+  --bg:            var(--papel);
+  --surface:       var(--branco);
+  --text:          var(--grafite-900);
+  --text-muted:    var(--grafite-500);
+  --border:        var(--linha);
+  --primary:       var(--tinta-700);
+  --primary-hover: var(--tinta-800);
+  --on-primary:    var(--branco);
+  --positivo:      var(--status-concluida); /* confirmar, no prazo */
+  --focus-ring:    var(--tinta-500);
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+}
+
+html {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Números do dashboard alinhados */
+.num {
+  font-variant-numeric: tabular-nums;
+}
