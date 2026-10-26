@@ -113,7 +113,7 @@
 
       <button class="entrar" type="submit" id="entrar">Entrar</button>
 
-      <p class="nota">Protótipo: entre com <b>roberto.lima@exemplo.gov.br</b> e qualquer senha, ou use o botão do Google.</p>
+      <p class="nota">Protótipo: use qualquer senha. Gestor: <b>roberto.lima@exemplo.gov.br</b> (ou o botão do Google). Funcionários: <b>carlos.mendes</b>, <b>ana.souza</b> ou <b>bruno.alves</b>, todos <b>@exemplo.gov.br</b>.</p>
     </form>
   </main>
 </div>
@@ -122,9 +122,9 @@
   // Contas de exemplo do protótipo; a autenticação real fica para o Cognito
   const contas = {
     "roberto.lima@exemplo.gov.br": { destino: "gestor.html" },
-    "carlos.mendes@exemplo.gov.br": { destino: null },
-    "ana.souza@exemplo.gov.br": { destino: null },
-    "bruno.alves@exemplo.gov.br": { destino: null },
+    "carlos.mendes@exemplo.gov.br": { destino: "funcionario.html?u=u1" },
+    "ana.souza@exemplo.gov.br": { destino: "funcionario.html?u=u2" },
+    "bruno.alves@exemplo.gov.br": { destino: "funcionario.html?u=u3" },
   };
 
   const form = document.getElementById("form");
@@ -153,7 +153,6 @@
 
     const conta = contas[email];
     if (!conta) return avisar("E-mail ou senha incorretos.");
-    if (!conta.destino) return avisar("O quadro do funcionário ainda está em construção neste protótipo.");
     entrarEm(conta.destino);
   });
   form.addEventListener("input", (ev) => {
