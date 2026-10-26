@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pauta · demo</title>
+  <meta name="description" content="Pauta: gestão de tarefas por conversa para prefeituras. Demo visual com painel MCP.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='700' font-size='18' fill='white' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="marca">
+      <span class="logo" aria-hidden="true">P</span>
+      <div>
+        <strong>Pauta</strong>
+        <small>Gestão de tarefas por conversa para prefeituras</small>
+      </div>
+    </div>
+    <div class="acoes">
+      <label class="seletor">
+        <span>Entrar como</span>
+        <select id="usuario"></select>
+      </label>
+      <div class="sino-envoltorio">
+        <button id="sino" class="icone" type="button" aria-label="Notificações" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6V11a7 7 0 0 0-5.5-6.84V3.5a1.5 1.5 0 0 0-3 0v.66A7 7 0 0 0 5 11v5l-2 2v1h18v-1Z"/></svg>
+          <span id="contador" class="contador-sino" hidden></span>
+        </button>
+        <div id="lista-notificacoes" class="notificacoes" hidden></div>
+      </div>
+      <button id="resetar" class="secundario" type="button">Resetar demo</button>
+    </div>
+  </header>
+
+  <main class="grade">
+    <section class="coluna chat" aria-label="Chat com o Pauta">
+      <header class="chat-topo">
+        <span class="avatar" aria-hidden="true">P</span>
+        <div>
+          <strong>Pauta</strong>
+          <small>Assistente · conversa estilo WhatsApp</small>
+        </div>
+      </header>
+      <div id="mensagens" class="mensagens" aria-live="polite"></div>
+      <div id="sugestoes" class="sugestoes"></div>
+      <form id="form-chat" class="chat-entrada" autocomplete="off">
+        <input id="texto" type="text" placeholder="Escreva uma mensagem" aria-label="Mensagem">
+        <button type="submit" aria-label="Enviar">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12.6 2-12.6 2z"/></svg>
+        </button>
+      </form>
+    </section>
+
+    <section class="coluna principal" aria-label="Tela do usuário">
+      <form id="form-tarefa" class="cartao form-tarefa" hidden>
+        <h2>Nova tarefa</h2>
+        <label class="campo largo">Título
+          <input name="titulo" required placeholder="Ex.: Relatório de obras da regional norte">
+        </label>
+        <label class="campo largo">Descrição
+          <textarea name="descricao" rows="2" required placeholder="O que precisa ser feito"></textarea>
+        </label>
+        <label class="campo">Responsável
+          <select name="responsavel" required></select>
+        </label>
+        <label class="campo">Prazo máximo
+          <input name="prazo" type="datetime-local" required>
+        </label>
+        <label class="campo">Urgência (opcional)
+          <select name="urgencia">
+            <option value="">Sem etiqueta</option>
+            <option value="baixa">Baixa</option>
+            <option value="media">Média</option>
+            <option value="alta">Alta</option>
+          </select>
+        </label>
+        <div class="form-acoes">
+          <button type="button" class="secundario" id="cancelar-form">Cancelar</button>
+          <button type="submit" class="primario">Criar e avisar</button>
+        </div>
+      </form>
+      <div id="visao"></div>
+    </section>
+
+    <section class="coluna mcp" aria-label="Painel MCP">
+      <header class="mcp-topo">
+        <div>
+          <h2>Painel MCP</h2>
+          <small>Cada ação vira uma chamada <code>tools/call</code> ao servidor do Pauta</small>
+        </div>
+        <button id="limpar-mcp" class="secundario pequeno" type="button">Limpar</button>
+      </header>
+      <details class="ferramentas">
+        <summary>Ferramentas expostas (<code>tools/list</code>)</summary>
+        <ul id="lista-ferramentas"></ul>
+        <p class="nota">No produto, quem decide as chamadas é o modelo (Claude no Amazon Bedrock). Nesta demo, um intérprete local faz esse papel e chama as mesmas ferramentas.</p>
+      </details>
+      <ol id="log-mcp" class="log"></ol>
+    </section>
+  </main>
+
+  <div id="avisos" class="avisos" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
