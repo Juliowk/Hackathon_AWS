@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pauta · Entrar</title>
 <link rel="stylesheet" href="../design/tokens.css">
+<link rel="icon" href="../design/marca/pauta-icone.png">
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; font-size: var(--fs-sm); line-height: 1.45; }
@@ -15,7 +16,8 @@
 
   /* Lado institucional */
   .lado { background: var(--primary); color: var(--tinta-100); padding: 40px 48px; display: flex; flex-direction: column; }
-  .lado .marca { font-size: var(--fs-lg); font-weight: var(--fw-semibold); color: var(--on-primary); }
+  .lado .marca { line-height: 0; }
+  .lado .marca img { height: 64px; width: auto; }
   .lado .chamada { margin-top: auto; max-width: 30ch; }
   .lado h1 { margin: 0; font-size: var(--fs-2xl); font-weight: var(--fw-semibold); line-height: 1.1; color: var(--on-primary); }
   .lado p { margin: 14px 0 0; color: var(--tinta-200); font-size: var(--fs-md); max-width: 38ch; }
@@ -59,6 +61,7 @@
   @media (max-width: 800px) {
     .tela { grid-template-columns: 1fr; }
     .lado { padding: 20px 16px 24px; }
+    .lado .marca img { height: 44px; }
     .lado .chamada { margin-top: 24px; }
     .lado h1 { font-size: var(--fs-xl); }
     .lado p { font-size: var(--fs-sm); }
@@ -70,7 +73,7 @@
 <body>
 <div class="tela">
   <aside class="lado">
-    <div class="marca">Pauta</div>
+    <div class="marca"><img src="../design/marca/pauta-logo-negativo-slogan.png" alt="Pauta · Do áudio à tarefa. Sem fricção."></div>
     <div class="chamada">
       <h1>Nenhuma tarefa sem dono.</h1>
       <p>Delegue por mensagem ou áudio no WhatsApp, ou pela web. O Pauta avisa a equipe e acompanha cada prazo.</p>

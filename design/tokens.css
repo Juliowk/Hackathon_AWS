@@ -19,13 +19,17 @@
   --fs-xl: 1.75rem;   /* 28 */
   --fs-2xl: 2.5rem;   /* 40 */
 
+  /* Marca (medidas no logo) */
+  --marca-azul:  #06234f; /* Azul Profundo */
+  --marca-verde: #00d084; /* Verde Esmeralda: só no logo e em destaques da marca */
+
   /* Tinta: marca, títulos, botão principal */
-  --tinta-900: #0f1d30;
-  --tinta-800: #172a45;
-  --tinta-700: #1f3a5c; /* cor da marca */
-  --tinta-500: #4a6283;
-  --tinta-200: #c9d1dc;
-  --tinta-100: #e4e8ee;
+  --tinta-900: #03142f;
+  --tinta-800: #041b40;
+  --tinta-700: #06234f; /* = azul do logo */
+  --tinta-500: #3f5b85;
+  --tinta-200: #c4cede;
+  --tinta-100: #e1e7f0;
 
   /* Papel e grafite: fundos, bordas, texto */
   --papel:      #f6f4ef;

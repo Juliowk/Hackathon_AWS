@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pauta · Paleta de cores</title>
 <link rel="stylesheet" href="tokens.css">
+<link rel="icon" href="marca/pauta-icone.png">
 <style>
   @page { size: A4; margin: 16mm 14mm; }
   * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -13,6 +14,16 @@
   @media print { html, body { background: var(--branco); } main { padding: 0; max-width: none; } }
 
   header { padding-bottom: 16px; border-bottom: 1px solid var(--linha-forte); }
+  header .logo { height: 72px; width: auto; display: block; margin-bottom: 14px; }
+  .marcas { display: grid; grid-template-columns: 3fr 2fr 1fr; gap: 10px; }
+  .marcas figure { margin: 0; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--branco); padding: 18px 14px 10px; display: grid; gap: 10px; align-content: space-between; justify-items: center; }
+  .marcas figure.escuro { background: var(--marca-azul); border-color: var(--marca-azul); }
+  .marcas img { max-width: 100%; height: 44px; width: auto; }
+  .marcas figcaption { color: var(--text-muted); font-size: 11px; }
+  .marcas .escuro figcaption { color: var(--tinta-200); }
+  .conceito { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; margin-top: 10px; }
+  .conceito img { height: 56px; }
+  .conceito p { margin: 0; color: var(--grafite-700); font-size: var(--fs-md); }
   header small { color: var(--text-muted); }
   header h1 { margin: 4px 0 2px; font-size: var(--fs-2xl); font-weight: var(--fw-semibold); color: var(--primary); line-height: 1.1; }
   header p { margin: 0; color: var(--grafite-700); font-size: var(--fs-md); }
@@ -54,10 +65,26 @@
 <body>
 <main>
   <header>
+    <img class="logo" src="marca/pauta-logo-slogan.png" alt="Pauta · Do áudio à tarefa. Sem fricção.">
     <small>Hackathon AWS · Identidade visual</small>
-    <h1>Pauta · Paleta de cores</h1>
-    <p>Tinta azul de documento oficial sobre papel, com cores de carimbo para os estados das tarefas.</p>
+    <h1>Paleta de cores</h1>
+    <p>Azul profundo do logo sobre papel, com cores de carimbo para os estados das tarefas.</p>
   </header>
+
+  <section>
+    <h2>Marca</h2>
+    <p class="nota">Use a versão azul em fundos claros e a versão branca sobre o azul da marca. Os arquivos ficam em <code>design/marca/</code>.</p>
+    <div class="marcas">
+      <figure><img src="marca/pauta-logo.png" alt="Logo Pauta"><figcaption>Fundo claro · pauta-logo.png</figcaption></figure>
+      <figure class="escuro"><img src="marca/pauta-logo-negativo.png" alt="Logo Pauta em branco"><figcaption>Fundo azul · pauta-logo-negativo.png</figcaption></figure>
+      <figure><img src="marca/pauta-icone.png" alt="Ícone do app"><figcaption>Ícone e favicon</figcaption></figure>
+    </div>
+    <div class="conceito">
+      <img src="marca/pauta-icone.png" alt="">
+      <p>O ícone une organização e áudio: o balão de conversa com a onda de voz vira um visto de tarefa feita. O que é dito vira tarefa.</p>
+    </div>
+    <div class="row" style="margin-top:12px" data-grupo="marca-azul:Azul Profundo · marca,marca-verde:Verde Esmeralda · destaque"></div>
+  </section>
 
   <section>
     <h2>Tipografia</h2>
@@ -72,7 +99,7 @@
 
   <section>
     <h2>Tinta</h2>
-    <p class="nota">A cor da marca. Menu lateral, títulos e botão principal usam <code>tinta-700</code>.</p>
+    <p class="nota">Escala do azul da marca. Menu lateral, títulos e botão principal usam <code>tinta-700</code>, que é o mesmo azul do logo.</p>
     <div class="row" data-grupo="tinta-900:Fundo escuro,tinta-800:Hover do primário,tinta-700:Marca · primário,tinta-500:Foco,tinta-200:Texto sobre tinta,tinta-100:Seleção"></div>
   </section>
 
@@ -145,6 +172,7 @@
     <h2>Regras de uso</h2>
     <ul>
       <li>Botão principal e marca em <b>tinta</b>; verde só para confirmar e para "no prazo".</li>
+      <li>O Verde Esmeralda é da marca: aparece no logo e no ícone, não em botões nem em estados.</li>
       <li>Cores de status e urgência são reservadas: não use para decorar outros elementos.</li>
       <li>Status e urgência sempre vêm com texto, nunca só a cor.</li>
       <li>Números em colunas usam algarismos de largura fixa (<code>.num</code>).</li>
