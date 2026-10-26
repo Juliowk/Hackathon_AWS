@@ -48,9 +48,12 @@
   --status-atrasada-bg:   #f3e1dc;
 
   /* Urgência */
-  --urgencia-baixa: #6d6a63;
-  --urgencia-media: #8a5a00;
-  --urgencia-alta:  #9e2a1c;
+  --urgencia-baixa:    #3e6a8a;
+  --urgencia-baixa-bg: #e3ecf2;
+  --urgencia-media:    #8a5a00;
+  --urgencia-media-bg: #f4ead3;
+  --urgencia-alta:     #9e2a1c;
+  --urgencia-alta-bg:  #f3e1dc;
 
   /* Papéis semânticos */
   --bg:            var(--papel);

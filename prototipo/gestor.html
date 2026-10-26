@@ -144,6 +144,7 @@
   /* Pop-ups */
   dialog { border: 1px solid var(--linha-forte); border-radius: var(--radius-md); padding: 0; width: min(560px, calc(100% - 32px)); max-height: calc(100vh - 48px); background: var(--surface); color: var(--text); box-shadow: 0 12px 32px rgb(15 29 48 / .18); }
   dialog::backdrop { background: rgb(15 29 48 / .4); }
+  dialog { overflow: hidden; }
   dialog form { display: flex; flex-direction: column; max-height: calc(100vh - 50px); }
   dialog.confirmar { width: min(400px, calc(100% - 32px)); }
   dialog.confirmar .d-body p { margin: 0; color: var(--grafite-700); }
@@ -163,9 +164,15 @@
   .opcoes { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--linha-forte); border-radius: var(--radius-sm); overflow: hidden; }
   .opcoes label { display: block; font-weight: var(--fw-regular); }
   .opcoes input { position: absolute; opacity: 0; }
-  .opcoes span { display: block; text-align: center; padding: 7px 4px; border-right: 1px solid var(--linha-forte); cursor: pointer; background: var(--branco); }
+  .opcoes span { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 7px 4px; border-right: 1px solid var(--linha-forte); cursor: pointer; background: var(--branco); }
   .opcoes label:last-child span { border-right: 0; }
-  .opcoes input:checked + span { background: var(--primary); color: var(--on-primary); }
+  .opcoes span::before { content: ""; width: 3px; height: 12px; border-radius: 1px; background: var(--u, var(--linha-forte)); }
+  .opcoes label:hover span { background: var(--u-bg, var(--papel-alt)); }
+  .opcoes input:checked + span { background: var(--u, var(--grafite-700)); color: var(--branco); }
+  .opcoes input:checked + span::before { background: currentColor; }
+  .opcoes .o-baixa { --u: var(--urgencia-baixa); --u-bg: var(--urgencia-baixa-bg); }
+  .opcoes .o-media { --u: var(--urgencia-media); --u-bg: var(--urgencia-media-bg); }
+  .opcoes .o-alta  { --u: var(--urgencia-alta);  --u-bg: var(--urgencia-alta-bg); }
   .opcoes input:focus-visible + span { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
   .erro { color: var(--status-atrasada); font-weight: var(--fw-regular); font-size: var(--fs-xs); display: none; }
   .invalido .campo { border-color: var(--status-atrasada); }
@@ -350,9 +357,9 @@
         <legend>Urgência <small>(opcional)</small></legend>
         <div class="opcoes">
           <label><input type="radio" name="urgencia" value="" checked><span>Sem</span></label>
-          <label><input type="radio" name="urgencia" value="baixa"><span>Baixa</span></label>
-          <label><input type="radio" name="urgencia" value="media"><span>Média</span></label>
-          <label><input type="radio" name="urgencia" value="alta"><span>Alta</span></label>
+          <label class="o-baixa"><input type="radio" name="urgencia" value="baixa"><span>Baixa</span></label>
+          <label class="o-media"><input type="radio" name="urgencia" value="media"><span>Média</span></label>
+          <label class="o-alta"><input type="radio" name="urgencia" value="alta"><span>Alta</span></label>
         </div>
       </fieldset>
     </div>
