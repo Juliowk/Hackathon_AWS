@@ -1,0 +1,97 @@
+/* Pauta · design tokens
+ * Fonte: Inter Tight (Google Fonts)
+ * Paleta: tinta azul de documento oficial sobre papel, com cores de carimbo
+ * para os estados. Sem gradientes, raios curtos, pesos contidos.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap");
+
+:root {
+  /* Tipografia */
+  --font-sans: "Inter Tight", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600; /* teto: títulos e números */
+
+  --fs-xs: 0.75rem;   /* 12 */
+  --fs-sm: 0.875rem;  /* 14 */
+  --fs-md: 1rem;      /* 16 */
+  --fs-lg: 1.25rem;   /* 20 */
+  --fs-xl: 1.75rem;   /* 28 */
+  --fs-2xl: 2.5rem;   /* 40 */
+
+  /* Marca (medidas no logo) */
+  --marca-azul:  #06234f; /* Azul Profundo */
+  --marca-verde: #00d084; /* Verde Esmeralda: só no logo e em destaques da marca */
+
+  /* Tinta: marca, títulos, botão principal */
+  --tinta-900: #03142f;
+  --tinta-800: #041b40;
+  --tinta-700: #06234f; /* = azul do logo */
+  --tinta-500: #3f5b85;
+  --tinta-200: #c4cede;
+  --tinta-100: #e1e7f0;
+
+  /* Papel e grafite: fundos, bordas, texto */
+  --papel:      #f6f4ef;
+  --papel-alt:  #eceae3;
+  --branco:     #fdfcfa;
+  --linha:      #d9d5cc;
+  --linha-forte:#b9b4a8;
+  --grafite-900:#1c1b19;
+  --grafite-700:#3d3b37;
+  --grafite-500:#6d6a63;
+
+  /* Estados, em cores de carimbo (texto / fundo) */
+  --status-aberta:        #3d3b37;
+  --status-aberta-bg:     #eceae3;
+  --status-andamento:     #8a5a00;
+  --status-andamento-bg:  #f4ead3;
+  --status-concluida:     #2d6340;
+  --status-concluida-bg:  #e1ebe2;
+  --status-atrasada:      #9e2a1c;
+  --status-atrasada-bg:   #f3e1dc;
+
+  /* Urgência */
+  --urgencia-baixa:    #3e6a8a;
+  --urgencia-baixa-bg: #e3ecf2;
+  --urgencia-media:    #8a5a00;
+  --urgencia-media-bg: #f4ead3;
+  --urgencia-alta:     #9e2a1c;
+  --urgencia-alta-bg:  #f3e1dc;
+
+  /* Papéis semânticos */
+  --bg:            var(--papel);
+  --surface:       var(--branco);
+  --text:          var(--grafite-900);
+  --text-muted:    var(--grafite-500);
+  --border:        var(--linha);
+  --primary:       var(--tinta-700);
+  --primary-hover: var(--tinta-800);
+  --on-primary:    var(--branco);
+  --positivo:      var(--status-concluida); /* confirmar, no prazo */
+  --focus-ring:    var(--tinta-500);
+
+  /* Gráficos (validados para daltonismo; o âmbar sempre vem com legenda e tabela) */
+  --graf-prazo:   #1d7848; /* concluída no prazo */
+  --graf-atraso:  #c99422; /* concluída com atraso */
+  --graf-vencida: #b23a2a; /* em aberto e vencida */
+  --graf-aberta:  #c9c4b8; /* em aberto, dentro do prazo */
+  --graf-serie:   var(--tinta-700);
+  --graf-grade:   #e6e2d9;
+
+  --radius-sm: 3px; /* botões, campos, etiquetas */
+  --radius-md: 6px; /* caixas, tabelas, painéis */
+}
+
+html {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-regular);
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Números do dashboard alinhados */
+.num {
+  font-variant-numeric: tabular-nums;
+}

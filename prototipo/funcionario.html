@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pauta · Minhas tarefas</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="icon" href="../design/marca/pauta-icone.png">
+<link rel="stylesheet" href="app.css">
+<style>
+  /* Quadro */
+  .busca { margin: 16px 0 12px; }
+  .quadro { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: start; }
+  .coluna-q { background: var(--papel-alt); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px; min-height: 240px; transition: background .1s; }
+  .coluna-q.alvo { background: var(--tinta-100); border-color: var(--tinta-500); }
+  .coluna-q header { display: flex; align-items: center; justify-content: space-between; padding: 2px 4px 10px; }
+  .coluna-q header h2 { display: flex; align-items: center; gap: 8px; }
+  .coluna-q header .n { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .coluna-q .ponto { width: 8px; height: 8px; border-radius: 2px; }
+  .cartoes { display: grid; gap: 8px; }
+  .cartao { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px; cursor: pointer; display: grid; gap: 8px; }
+  .cartao:hover { border-color: var(--linha-forte); }
+  .cartao.arrastando { opacity: .45; }
+  .cartao .t { font-weight: var(--fw-medium); line-height: 1.35; }
+  .cartao .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; color: var(--text-muted); font-size: var(--fs-xs); }
+  .cartao .prazo { font-variant-numeric: tabular-nums; }
+  .cartao .rodape { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+  .cartao select { border: 1px solid var(--linha-forte); border-radius: var(--radius-sm); background: var(--branco); padding: 4px 6px; font-size: var(--fs-xs); }
+  .cartao.concluida .t { color: var(--grafite-700); }
+  .coluna-q .vazio { padding: 24px 8px; font-size: var(--fs-xs); }
+
+  /* Detalhes */
+  dialog.detalhe { width: min(620px, calc(100% - 32px)); }
+  .detalhe .d-head { align-items: flex-start; gap: 12px; }
+  .detalhe .d-head h2 { font-size: var(--fs-lg); line-height: 1.3; }
+  .detalhe .tags { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .detalhe .desc { margin: 0; line-height: 1.6; color: var(--text); white-space: pre-line; }
+  .detalhe dl { display: grid; grid-template-columns: max-content 1fr; gap: 8px 20px; margin: 0; padding: 14px; background: var(--papel); border: 1px solid var(--border); border-radius: var(--radius-md); }
+  .detalhe dt { color: var(--text-muted); }
+  .detalhe dd { margin: 0; }
+  .detalhe .rot { font-weight: var(--fw-medium); margin-bottom: 6px; }
+  .mover-status { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--linha-forte); border-radius: var(--radius-sm); overflow: hidden; }
+  .mover-status button { border: 0; border-right: 1px solid var(--linha-forte); background: var(--branco); padding: 8px 4px; cursor: pointer; font-weight: var(--fw-medium); }
+  .mover-status button:last-child { border-right: 0; }
+  .mover-status button:hover { background: var(--papel-alt); }
+  .mover-status button[aria-pressed="true"] { background: var(--primary); color: var(--on-primary); }
+
+  @media (max-width: 900px) {
+    .quadro { grid-template-columns: 1fr; }
+    .coluna-q { min-height: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <aside class="menu">
+    <a class="marca" href="#"><img src="../design/marca/pauta-logo-negativo.png" alt="Pauta"></a>
+    <div class="orgao">Prefeitura de Exemplo<br>Secretaria de Obras</div>
+    <nav aria-label="Navegação principal">
+      <a href="#" aria-current="page">
+        <svg viewBox="0 0 16 16"><rect x="1.5" y="2" width="3.5" height="12" rx="1"/><rect x="6.25" y="2" width="3.5" height="8" rx="1"/><rect x="11" y="2" width="3.5" height="10" rx="1"/></svg>
+        Minhas tarefas</a>
+    </nav>
+    <div class="conta">
+      <b id="conta-nome"></b>
+      <span id="conta-papel"></span>
+      <button class="sair" id="sair" aria-label="Sair" title="Sair">
+        <svg viewBox="0 0 20 20"><path d="M8 4H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/><path d="M12 6.5 15.5 10 12 13.5"/><path d="M15.5 10H8"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <main class="conteudo">
+    <section class="vista">
+      <div class="head">
+        <div><h1>Minhas tarefas</h1><p class="hoje"></p></div>
+      </div>
+
+      <div class="kpis caixa" id="kpis"></div>
+
+      <div class="busca">
+        <input type="search" id="q" placeholder="Buscar nas minhas tarefas" aria-label="Buscar nas minhas tarefas">
+        <button class="link" id="limpar-filtro" hidden>Limpar filtro</button>
+      </div>
+
+      <div class="quadro" id="quadro"></div>
+    </section>
+  </main>
+</div>
+
+<dialog class="detalhe" id="detalhe" aria-labelledby="det-titulo">
+  <div class="d-head">
+    <div>
+      <h2 id="det-titulo"></h2>
+      <div class="tags" id="det-tags"></div>
+    </div>
+    <button type="button" class="x" data-fechar aria-label="Fechar">×</button>
+  </div>
+  <div class="d-body">
+    <div><div class="rot">Descrição</div><p class="desc" id="det-desc"></p></div>
+    <dl id="det-dados"></dl>
+    <div>
+      <div class="rot" id="rot-mover">Mover para</div>
+      <div class="mover-status" id="det-mover" role="group" aria-labelledby="rot-mover"></div>
+    </div>
+  </div>
+  <div class="d-foot"><button type="button" class="btn btn-2" data-fechar>Fechar</button></div>
+</dialog>
+
+<dialog class="confirmar" id="confirmar-sair" aria-labelledby="sair-titulo">
+  <form method="dialog">
+    <div class="d-head"><h2 id="sair-titulo">Sair do Pauta?</h2></div>
+    <div class="d-body"><p>Você vai voltar para a tela de login. As tarefas continuam salvas.</p></div>
+    <div class="d-foot">
+      <button class="btn btn-2" value="cancelar" autofocus>Cancelar</button>
+      <button class="btn btn-perigo" value="sair">Sair</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="aviso" id="aviso" role="status"></div>
+
+<script src="pauta.js"></script>
+<script>
+  // Funcionário vem do login (?u=u1); sem parâmetro, usa o primeiro da equipe
+  const pedido = new URLSearchParams(location.search).get("u");
+  const eu = equipe.find(e => e.id === pedido) ?? equipe[0];
+  const gestor = usuarios.find(u => u.papel === "gestor");
+
+  const COLUNAS = [
+    { s: "aberta", nome: "Aberta", cor: "var(--status-aberta)" },
+    { s: "andamento", nome: "Em andamento", cor: "var(--status-andamento)" },
+    { s: "concluida", nome: "Concluída", cor: "var(--status-concluida)" },
+  ];
+  const fmtCompleto = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "2-digit", month: "long", hour: "2-digit", minute: "2-digit" });
+
+  let filtro = "";
+  let aberta = null; // tarefa no pop-up de detalhes
+
+  const minhas = () => tarefas.filter(t => t.responsavelId === eu.id);
+
+  function render() {
+    document.getElementById("kpis").innerHTML = kpisHTML(minhas(), filtro, "Filtrar o quadro");
+    document.getElementById("limpar-filtro").hidden = !filtro;
+    const q = document.getElementById("q").value.trim().toLowerCase();
+    const visiveis = (filtro ? filtrar(minhas(), filtro) : minhas())
+      .filter(t => !q || t.titulo.toLowerCase().includes(q) || t.descricao.toLowerCase().includes(q));
+
+    document.getElementById("quadro").innerHTML = COLUNAS.map(c => {
+      const lista = visiveis.filter(t => t.status === c.s).sort((a, b) =>
+        c.s === "concluida" ? new Date(b.concluidaEm) - new Date(a.concluidaEm) : new Date(a.prazo) - new Date(b.prazo));
+      return `<section class="coluna-q" data-status="${c.s}" aria-label="${c.nome}">
+        <header><h2><span class="ponto" style="background:${c.cor}"></span>${c.nome}</h2><span class="n">${lista.length}</span></header>
+        <div class="cartoes">${lista.length ? lista.map(cartao).join("") : `<div class="vazio">${c.s === "concluida" ? "Arraste aqui o que terminar." : "Nenhuma tarefa."}</div>`}</div>
+      </section>`;
+    }).join("");
+
+    if (aberta) preencherDetalhe(tarefas.find(t => t.id === aberta));
+  }
+
+  function cartao(t) {
+    const opcoes = COLUNAS.map(c => `<option value="${c.s}" ${c.s === t.status ? "selected" : ""}>${c.nome}</option>`).join("");
+    return `<article class="cartao ${t.status}" draggable="true" data-id="${t.id}" tabindex="0" aria-label="${esc(t.titulo)}">
+      <div class="t">${esc(t.titulo)}</div>
+      <div class="meta">
+        <span class="prazo ${atrasada(t) ? "prazo-atraso" : ""}">Prazo ${prazoTexto(t)}</span>
+        ${t.urgencia ? urgTag(t) : ""}
+        ${atrasada(t) ? `<span class="tag st-atrasada">Atrasada</span>` : ""}
+      </div>
+      <div class="rodape">
+        <span class="origem">${t.origem === "whatsapp" ? "Via WhatsApp" : "Via web"}</span>
+        <select data-mover="${t.id}" aria-label="Mover tarefa">${opcoes}</select>
+      </div>
+    </article>`;
+  }
+
+  function mover(id, status) {
+    const t = tarefas.find(x => x.id === id);
+    if (!t || t.status === status) return;
+    t.status = status;
+    if (status === "concluida") t.concluidaEm = new Date().toISOString();
+    else delete t.concluidaEm;
+    salvarTarefas();
+    render();
+    const nome = COLUNAS.find(c => c.s === status).nome;
+    avisar(`Movida para ${nome}. Aviso enviado a ${gestor.nome} na web e no WhatsApp.`);
+  }
+
+  /* Detalhes */
+  const detalhe = document.getElementById("detalhe");
+  function preencherDetalhe(t) {
+    document.getElementById("det-titulo").textContent = t.titulo;
+    document.getElementById("det-tags").innerHTML = statusTag(t) + (t.urgencia ? ` <span class="tag" style="color:var(--urgencia-${t.urgencia});background:var(--urgencia-${t.urgencia}-bg)">Urgência ${URG[t.urgencia].toLowerCase()}</span>` : "");
+    document.getElementById("det-desc").textContent = t.descricao;
+    const linhas = [
+      ["Prazo", fmtCompleto.format(new Date(t.prazo)) + (atrasada(t) ? " · vencido" : "")],
+      ["Urgência", t.urgencia ? URG[t.urgencia] : "Não informada"],
+      ["Responsável", `${eu.nome} (você)`],
+      ["Atribuída por", `${gestor.nome}, ${gestor.cargo.toLowerCase()}`],
+      ["Origem", t.origem === "whatsapp" ? "Mensagem no WhatsApp" : "Cadastro na web"],
+      ["Criada em", t.criadaEm ? fmtCompleto.format(new Date(t.criadaEm)) : "—"],
+      ...(t.concluidaEm ? [["Concluída em", fmtCompleto.format(new Date(t.concluidaEm)) + (noPrazo(t) ? " · no prazo" : " · com atraso")]] : []),
+    ];
+    const dl = document.getElementById("det-dados");
+    dl.replaceChildren(...linhas.flatMap(([k, v]) => {
+      const dt = document.createElement("dt"); dt.textContent = k;
+      const dd = document.createElement("dd"); dd.textContent = v;
+      return [dt, dd];
+    }));
+    document.getElementById("det-mover").innerHTML = COLUNAS.map(c =>
+      `<button type="button" data-s="${c.s}" aria-pressed="${c.s === t.status}">${c.nome}</button>`).join("");
+  }
+  function abrirDetalhe(id) {
+    aberta = id;
+    preencherDetalhe(tarefas.find(t => t.id === id));
+    detalhe.showModal();
+  }
+  detalhe.addEventListener("close", () => { aberta = null; });
+  detalhe.addEventListener("click", (ev) => {
+    if (ev.target === detalhe || ev.target.closest("[data-fechar]")) return detalhe.close();
+    const b = ev.target.closest("[data-s]");
+    if (b) mover(aberta, b.dataset.s);
+  });
+
+  /* Quadro: clique, teclado, seletor e arrastar */
+  const quadro = document.getElementById("quadro");
+  quadro.addEventListener("click", (ev) => {
+    if (ev.target.closest("select")) return;
+    const c = ev.target.closest(".cartao"); if (c) abrirDetalhe(+c.dataset.id);
+  });
+  quadro.addEventListener("keydown", (ev) => {
+    if (ev.target.matches(".cartao") && (ev.key === "Enter" || ev.key === " ")) { ev.preventDefault(); abrirDetalhe(+ev.target.dataset.id); }
+  });
+  quadro.addEventListener("change", (ev) => {
+    if (ev.target.dataset.mover) mover(+ev.target.dataset.mover, ev.target.value);
+  });
+  quadro.addEventListener("dragstart", (ev) => {
+    const c = ev.target.closest(".cartao"); if (!c) return;
+    ev.dataTransfer.setData("text/plain", c.dataset.id);
+    ev.dataTransfer.effectAllowed = "move";
+    c.classList.add("arrastando");
+  });
+  quadro.addEventListener("dragend", (ev) => ev.target.closest(".cartao")?.classList.remove("arrastando"));
+  quadro.addEventListener("dragover", (ev) => {
+    const col = ev.target.closest(".coluna-q"); if (!col) return;
+    ev.preventDefault();
+    quadro.querySelectorAll(".alvo").forEach(x => x !== col && x.classList.remove("alvo"));
+    col.classList.add("alvo");
+  });
+  quadro.addEventListener("dragleave", (ev) => {
+    const col = ev.target.closest(".coluna-q");
+    if (col && !col.contains(ev.relatedTarget)) col.classList.remove("alvo");
+  });
+  quadro.addEventListener("drop", (ev) => {
+    const col = ev.target.closest(".coluna-q"); if (!col) return;
+    ev.preventDefault();
+    col.classList.remove("alvo");
+    mover(+ev.dataTransfer.getData("text/plain"), col.dataset.status);
+  });
+
+  /* Indicadores e busca */
+  document.getElementById("kpis").addEventListener("click", (ev) => {
+    const b = ev.target.closest(".kpi"); if (!b) return;
+    filtro = filtro === b.dataset.f ? "" : b.dataset.f;
+    render();
+  });
+  document.getElementById("limpar-filtro").addEventListener("click", () => { filtro = ""; render(); });
+  document.getElementById("q").addEventListener("input", render);
+  aoMudarTarefas(render);
+
+  let timer;
+  function avisar(msg) {
+    const a = document.getElementById("aviso");
+    a.textContent = msg; a.classList.add("on");
+    clearTimeout(timer); timer = setTimeout(() => a.classList.remove("on"), 3500);
+  }
+
+  /* Sair, com confirmação */
+  const confirmarSair = document.getElementById("confirmar-sair");
+  document.getElementById("sair").addEventListener("click", () => confirmarSair.showModal());
+  confirmarSair.addEventListener("close", () => { if (confirmarSair.returnValue === "sair") location.href = "login.html"; });
+  confirmarSair.addEventListener("click", (ev) => { if (ev.target === confirmarSair) confirmarSair.close("cancelar"); });
+
+  document.getElementById("conta-nome").textContent = eu.nome;
+  document.getElementById("conta-papel").textContent = eu.cargo;
+  const hoje = fmtHoje.format(new Date());
+  document.querySelector(".hoje").textContent = `${hoje.charAt(0).toUpperCase() + hoje.slice(1)} · Olá, ${eu.nome.split(" ")[0]}`;
+  render();
+</script>
+</body>
+</html>

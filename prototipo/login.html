@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pauta · Entrar</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="icon" href="../design/marca/pauta-icone.png">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-size: var(--fs-sm); line-height: 1.45; }
+  button, input { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+  .tela { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+
+  /* Lado institucional */
+  .lado { background: var(--primary); color: var(--tinta-100); padding: 40px 48px; display: flex; flex-direction: column; }
+  .lado .marca { line-height: 0; }
+  .lado .marca img { height: 64px; width: auto; }
+  .lado .chamada { margin-top: auto; max-width: 30ch; }
+  .lado h1 { margin: 0; font-size: var(--fs-2xl); font-weight: var(--fw-semibold); line-height: 1.1; color: var(--on-primary); }
+  .lado p { margin: 14px 0 0; color: var(--tinta-200); font-size: var(--fs-md); max-width: 38ch; }
+  .lado .rodape { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--tinta-800); color: var(--tinta-200); font-size: var(--fs-xs); }
+
+  /* Formulário */
+  .area { display: grid; place-items: center; padding: 40px 24px; }
+  form { width: min(380px, 100%); }
+  form h2 { margin: 0; font-size: var(--fs-xl); font-weight: var(--fw-semibold); color: var(--primary); }
+  form .sub { margin: 4px 0 24px; color: var(--text-muted); }
+
+  .google { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px; background: var(--branco); border: 1px solid var(--linha-forte); border-radius: var(--radius-sm); font-weight: var(--fw-medium); cursor: pointer; }
+  .google:hover { background: var(--papel-alt); }
+  .google svg { width: 18px; height: 18px; }
+
+  .ou { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: var(--text-muted); font-size: var(--fs-xs); }
+  .ou::before, .ou::after { content: ""; flex: 1; border-top: 1px solid var(--border); }
+
+  label { display: grid; gap: 6px; font-weight: var(--fw-medium); margin-bottom: 16px; }
+  .linha-rotulo { display: flex; justify-content: space-between; align-items: baseline; }
+  .linha-rotulo a { font-weight: var(--fw-regular); color: var(--primary); text-underline-offset: 3px; }
+  .campo-senha { position: relative; }
+  .campo { width: 100%; border: 1px solid var(--linha-forte); border-radius: var(--radius-sm); padding: 9px 10px; background: var(--branco); font-weight: var(--fw-regular); }
+  .campo-senha .campo { padding-right: 64px; }
+  .mostrar { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background: none; border: 0; padding: 4px 8px; color: var(--primary); font-weight: var(--fw-medium); font-size: var(--fs-xs); cursor: pointer; border-radius: var(--radius-sm); }
+  .erro { color: var(--status-atrasada); font-weight: var(--fw-regular); font-size: var(--fs-xs); display: none; }
+  .invalido .campo { border-color: var(--status-atrasada); }
+  .invalido .erro { display: block; }
+
+  .lembrar { display: flex; align-items: center; gap: 8px; font-weight: var(--fw-regular); margin: -4px 0 20px; }
+  .lembrar input { accent-color: var(--primary); width: 16px; height: 16px; margin: 0; }
+
+  .entrar { width: 100%; padding: 10px; border: 0; border-radius: var(--radius-sm); background: var(--primary); color: var(--on-primary); font-weight: var(--fw-medium); cursor: pointer; }
+  .entrar:hover { background: var(--primary-hover); }
+  .entrar:disabled { opacity: .7; cursor: progress; }
+
+  .alerta { display: none; margin-bottom: 16px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--status-atrasada-bg); color: var(--status-atrasada); }
+  .alerta.on { display: block; }
+  .nota { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: var(--fs-xs); }
+
+  @media (max-width: 800px) {
+    .tela { grid-template-columns: 1fr; }
+    .lado { padding: 20px 16px 24px; }
+    .lado .marca img { height: 44px; }
+    .lado .chamada { margin-top: 24px; }
+    .lado h1 { font-size: var(--fs-xl); }
+    .lado p { font-size: var(--fs-sm); }
+    .lado .rodape { display: none; }
+    .area { padding: 28px 16px 40px; place-items: start center; }
+  }
+</style>
+</head>
+<body>
+<div class="tela">
+  <aside class="lado">
+    <div class="marca"><img src="../design/marca/pauta-logo-negativo-slogan.png" alt="Pauta · Do áudio à tarefa. Sem fricção."></div>
+    <div class="chamada">
+      <h1>Nenhuma tarefa sem dono.</h1>
+      <p>Delegue por mensagem ou áudio no WhatsApp, ou pela web. O Pauta avisa a equipe e acompanha cada prazo.</p>
+    </div>
+    <div class="rodape">Gestão de tarefas para prefeituras e secretarias municipais</div>
+  </aside>
+
+  <main class="area">
+    <form id="form" novalidate>
+      <h2>Entrar</h2>
+      <p class="sub">Acesse com a conta da sua prefeitura.</p>
+
+      <button type="button" class="google" id="google">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.6 13.3l7.9 6.2C12.4 13.7 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.7 6c4.5-4.2 6.9-10.3 6.9-17.7z"/><path fill="#FBBC05" d="M10.5 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.2C1 16.5 0 20.1 0 24s1 7.5 2.6 10.8l7.9-6.2z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.7-6c-2.2 1.5-5 2.3-8.2 2.3-6.3 0-11.6-4.2-13.5-10l-7.9 6.2C6.6 42.6 14.6 48 24 48z"/></svg>
+        Entrar com Google
+      </button>
+
+      <div class="ou">ou com e-mail</div>
+
+      <div class="alerta" id="alerta" role="alert"></div>
+
+      <label data-campo="email">E-mail
+        <input class="campo" type="email" name="email" autocomplete="username" placeholder="nome@prefeitura.gov.br">
+        <span class="erro">Informe um e-mail válido.</span>
+      </label>
+
+      <label data-campo="senha">
+        <span class="linha-rotulo">Senha <a href="#" id="esqueci">Esqueci a senha</a></span>
+        <span class="campo-senha">
+          <input class="campo" type="password" name="senha" autocomplete="current-password">
+          <button type="button" class="mostrar" id="mostrar" aria-label="Mostrar senha">Mostrar</button>
+        </span>
+        <span class="erro">Informe a senha.</span>
+      </label>
+
+      <label class="lembrar"><input type="checkbox" name="lembrar"> Manter conectado neste computador</label>
+
+      <button class="entrar" type="submit" id="entrar">Entrar</button>
+
+      <p class="nota">Protótipo: use qualquer senha. Gestor: <b>roberto.lima@exemplo.gov.br</b> (ou o botão do Google). Funcionários: <b>carlos.mendes</b>, <b>ana.souza</b> ou <b>bruno.alves</b>, todos <b>@exemplo.gov.br</b>.</p>
+    </form>
+  </main>
+</div>
+
+<script>
+  // Contas de exemplo do protótipo; a autenticação real fica para o Cognito
+  const contas = {
+    "roberto.lima@exemplo.gov.br": { destino: "gestor.html" },
+    "carlos.mendes@exemplo.gov.br": { destino: "funcionario.html?u=u1" },
+    "ana.souza@exemplo.gov.br": { destino: "funcionario.html?u=u2" },
+    "bruno.alves@exemplo.gov.br": { destino: "funcionario.html?u=u3" },
+  };
+
+  const form = document.getElementById("form");
+  const alerta = document.getElementById("alerta");
+  const botao = document.getElementById("entrar");
+
+  function avisar(msg) { alerta.textContent = msg; alerta.classList.toggle("on", !!msg); }
+
+  function entrarEm(destino) {
+    botao.disabled = true; botao.textContent = "Entrando…";
+    setTimeout(() => { location.href = destino; }, 500);
+  }
+
+  form.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    avisar("");
+    const email = form.email.value.trim().toLowerCase();
+    const senha = form.senha.value;
+    const regras = { email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email), senha: senha.length > 0 };
+    let primeiro = null;
+    for (const [campo, ok] of Object.entries(regras)) {
+      form.querySelector(`[data-campo="${campo}"]`).classList.toggle("invalido", !ok);
+      if (!ok && !primeiro) primeiro = form[campo];
+    }
+    if (primeiro) return primeiro.focus();
+
+    const conta = contas[email];
+    if (!conta) return avisar("E-mail ou senha incorretos.");
+    entrarEm(conta.destino);
+  });
+  form.addEventListener("input", (ev) => {
+    ev.target.closest(".invalido")?.classList.remove("invalido");
+  });
+
+  document.getElementById("google").addEventListener("click", () => {
+    // No protótipo, o Google entra direto com a conta do gestor
+    avisar("");
+    entrarEm("gestor.html");
+  });
+
+  document.getElementById("mostrar").addEventListener("click", (ev) => {
+    const visivel = form.senha.type === "text";
+    form.senha.type = visivel ? "password" : "text";
+    ev.target.textContent = visivel ? "Mostrar" : "Ocultar";
+    ev.target.setAttribute("aria-label", visivel ? "Mostrar senha" : "Ocultar senha");
+  });
+
+  document.getElementById("esqueci").addEventListener("click", (ev) => {
+    ev.preventDefault();
+    const email = form.email.value.trim();
+    avisar("");
+    alerta.classList.add("on");
+    alerta.style.background = "var(--tinta-100)"; alerta.style.color = "var(--primary)";
+    alerta.textContent = email ? `Enviaremos um link de redefinição para ${email}.` : "Informe seu e-mail acima para redefinir a senha.";
+  });
+  form.addEventListener("submit", () => { alerta.style.background = ""; alerta.style.color = ""; }, true);
+</script>
+</body>
+</html>

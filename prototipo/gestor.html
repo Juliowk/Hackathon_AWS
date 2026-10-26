@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pauta · Gestor</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="icon" href="../design/marca/pauta-icone.png">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<div class="app" id="app">
+  <aside class="menu">
+    <a class="marca" href="#painel"><img src="../design/marca/pauta-logo-negativo.png" alt="Pauta"></a>
+    <div class="orgao">Prefeitura de Exemplo<br>Secretaria de Obras</div>
+    <nav aria-label="Navegação principal">
+      <a href="#painel" data-vista="painel">
+        <svg viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+        Painel geral</a>
+      <a href="#tarefas" data-vista="tarefas">
+        <svg viewBox="0 0 16 16"><path d="M6 4h8M6 8h8M6 12h8"/><path d="M2 4h1M2 8h1M2 12h1"/></svg>
+        Tarefas</a>
+      <a href="#funcionarios" data-vista="funcionarios">
+        <svg viewBox="0 0 16 16"><circle cx="6" cy="5.5" r="2.5"/><path d="M1.5 14c.5-2.8 2.2-4 4.5-4s4 1.2 4.5 4"/><path d="M11 3.2a2.4 2.4 0 0 1 0 4.6M12.5 10.3c1.2.5 1.9 1.7 2 3.7"/></svg>
+        Por funcionário</a>
+    </nav>
+    <div class="conta">
+      <b id="conta-nome"></b>
+      <span id="conta-papel"></span>
+      <button class="sair" id="sair" aria-label="Sair" title="Sair">
+        <svg viewBox="0 0 20 20"><path d="M8 4H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/><path d="M12 6.5 15.5 10 12 13.5"/><path d="M15.5 10H8"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <main class="conteudo">
+    <!-- Painel geral -->
+    <section class="vista" id="vista-painel">
+      <div class="head">
+        <div><h1>Painel geral</h1><p class="hoje"></p></div>
+        <button class="btn btn-1" data-nova>Nova tarefa</button>
+      </div>
+
+      <div class="kpis caixa" id="kpis"></div>
+
+      <div class="graficos">
+        <section class="grafico caixa" aria-labelledby="g1-t">
+          <h2 id="g1-t">Entregas por funcionário</h2>
+          <p class="sub">Todas as tarefas de cada pessoa, pela situação do prazo</p>
+          <div class="legenda">
+            <span><i style="background:var(--graf-prazo)"></i>Concluída no prazo</span>
+            <span><i style="background:var(--graf-atraso)"></i>Concluída com atraso</span>
+            <span><i style="background:var(--graf-aberta)"></i>Em aberto</span>
+            <span><i style="background:var(--graf-vencida)"></i>Atrasada</span>
+          </div>
+          <div class="barras" id="g-entregas"></div>
+          <div class="eixo-x" id="g-entregas-eixo"></div>
+        </section>
+
+        <section class="grafico caixa" aria-labelledby="g2-t">
+          <h2 id="g2-t">Prazos dos próximos 7 dias</h2>
+          <p class="sub">Tarefas em aberto que vencem em cada dia</p>
+          <div class="colunas" id="g-prazos"></div>
+          <div class="dias" id="g-prazos-dias"></div>
+        </section>
+      </div>
+
+      <div class="duas bloco">
+        <section>
+          <div class="sec-head"><h2 id="titulo-proximas">Próximas tarefas</h2>
+            <span class="acoes"><button class="link" id="limpar-filtro" hidden>Limpar filtro</button><button class="link" data-ir="tarefas">Ver na lista completa</button></span></div>
+          <div class="rolagem caixa"><table>
+            <thead><tr><th>Tarefa</th><th>Responsável</th><th>Prazo</th><th>Status</th></tr></thead>
+            <tbody id="proximas"></tbody>
+          </table></div>
+        </section>
+        <section>
+          <div class="sec-head"><h2>Vencem nas próximas 24 horas</h2></div>
+          <ul class="lista caixa" id="vencem"></ul>
+        </section>
+      </div>
+    </section>
+
+    <!-- Tarefas -->
+    <section class="vista" id="vista-tarefas" hidden>
+      <div class="head">
+        <div><h1>Tarefas</h1><p id="contagem"></p></div>
+        <button class="btn btn-1" data-nova>Nova tarefa</button>
+      </div>
+      <div class="kpis caixa" id="kpis-tarefas"></div>
+      <div class="busca">
+        <input type="search" id="q" placeholder="Buscar por título" aria-label="Buscar por título">
+        <select id="f-status" aria-label="Filtrar por status">
+          <option value="todas">Todos os status</option>
+          <option value="aberta">Abertas</option>
+          <option value="andamento">Em andamento</option>
+          <option value="concluida">Concluídas</option>
+          <option value="atrasada">Atrasadas</option>
+          <option value="noprazo">Concluídas no prazo</option>
+        </select>
+        <select id="f-resp" aria-label="Filtrar por responsável"><option value="">Todos os responsáveis</option></select>
+      </div>
+      <div class="rolagem caixa"><table>
+        <thead><tr><th>Tarefa</th><th>Responsável</th><th>Prazo</th><th class="col-urg">Urgência</th><th>Status</th><th class="col-origem">Origem</th></tr></thead>
+        <tbody id="tarefas"></tbody>
+      </table></div>
+    </section>
+
+    <!-- Por funcionário -->
+    <section class="vista" id="vista-funcionarios" hidden>
+      <div class="head">
+        <div><h1>Por funcionário</h1><p>Selecione uma pessoa para ver as tarefas dela.</p></div>
+        <button class="btn btn-1" data-nova>Nova tarefa</button>
+      </div>
+      <div class="rolagem caixa" style="margin-top:20px"><table class="equipe-tab">
+        <thead><tr><th>Nome</th><th class="n">No prazo</th><th class="n">Com atraso</th><th class="n">Em aberto</th><th class="n">Atrasadas</th><th class="n">Cumprimento</th></tr></thead>
+        <tbody id="equipe"></tbody>
+      </table></div>
+
+      <div class="bloco">
+        <div class="sec-head"><h2 id="func-nome"></h2><span id="func-contagem"></span></div>
+        <div class="resumo caixa" id="func-resumo"></div>
+        <div class="rolagem caixa"><table>
+          <thead><tr><th>Tarefa</th><th>Prazo</th><th class="col-urg">Urgência</th><th>Status</th><th class="col-origem">Origem</th></tr></thead>
+          <tbody id="func-tarefas"></tbody>
+        </table></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<dialog id="painel" aria-labelledby="painel-titulo">
+  <form id="form" novalidate>
+    <div class="d-head">
+      <h2 id="painel-titulo">Nova tarefa</h2>
+      <button type="button" class="x" data-fechar aria-label="Fechar">×</button>
+    </div>
+    <div class="d-body">
+      <label data-campo="titulo">Título
+        <input class="campo" name="titulo" maxlength="120" autocomplete="off">
+        <span class="erro">Informe o título.</span>
+      </label>
+      <label data-campo="descricao">Descrição
+        <textarea class="campo" name="descricao"></textarea>
+        <span class="erro">Descreva o que precisa ser entregue.</span>
+      </label>
+      <div class="dupla">
+        <label data-campo="responsavel">Responsável
+          <select class="campo" name="responsavel"><option value="">Selecione</option></select>
+          <span class="erro">Escolha o responsável.</span>
+        </label>
+        <label data-campo="prazo">Prazo máximo
+          <input class="campo" type="datetime-local" name="prazo">
+          <span class="erro">Informe um prazo futuro.</span>
+        </label>
+      </div>
+      <fieldset>
+        <legend>Urgência <small>(opcional)</small></legend>
+        <div class="opcoes">
+          <label><input type="radio" name="urgencia" value="" checked><span>Sem</span></label>
+          <label class="o-baixa"><input type="radio" name="urgencia" value="baixa"><span>Baixa</span></label>
+          <label class="o-media"><input type="radio" name="urgencia" value="media"><span>Média</span></label>
+          <label class="o-alta"><input type="radio" name="urgencia" value="alta"><span>Alta</span></label>
+        </div>
+      </fieldset>
+    </div>
+    <div class="d-foot">
+      <button type="button" class="btn btn-2" data-fechar>Cancelar</button>
+      <button type="submit" class="btn btn-1">Criar tarefa</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="confirmar" id="confirmar-sair" aria-labelledby="sair-titulo">
+  <form method="dialog">
+    <div class="d-head"><h2 id="sair-titulo">Sair do Pauta?</h2></div>
+    <div class="d-body"><p>Você vai voltar para a tela de login. As tarefas continuam salvas.</p></div>
+    <div class="d-foot">
+      <button class="btn btn-2" value="cancelar" autofocus>Cancelar</button>
+      <button class="btn btn-perigo" value="sair">Sair</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="dica" id="dica" role="tooltip"></div>
+<div class="aviso" id="aviso" role="status"></div>
+
+<script src="pauta.js"></script>
+<script>
+  let usuarioAtual = usuarios[0];
+  let funcSelecionado = equipe[0].id;
+
+  /* Painel geral */
+  function renderKpis() {
+    document.getElementById("kpis").innerHTML = kpisHTML(tarefas, painelFiltro, "Filtrar as tarefas abaixo");
+    const st = document.getElementById("f-status").value;
+    document.getElementById("kpis-tarefas").innerHTML = kpisHTML(tarefas, st === "todas" ? "" : st, "Filtrar a lista");
+  }
+
+  function renderEntregas() {
+    const dados = equipe.map(e => ({ e, r: resumoDe(tarefas.filter(t => t.responsavelId === e.id)) }));
+    const max = Math.max(...dados.map(d => d.r.total), 1);
+    const passo = max <= 6 ? 1 : max <= 12 ? 2 : 5;
+    const topo = Math.ceil(max / passo) * passo;
+    const segs = [
+      ["noPrazo", "var(--graf-prazo)", "Concluídas no prazo"],
+      ["comAtraso", "var(--graf-atraso)", "Concluídas com atraso"],
+      ["emAberto", "var(--graf-aberta)", "Em aberto"],
+      ["atrasadas", "var(--graf-vencida)", "Atrasadas"],
+    ];
+    document.getElementById("g-entregas").innerHTML = dados.map(({ e, r }) => `
+      <div class="barra-linha">
+        <span class="nome" title="${esc(e.nome)}">${esc(nomeCurto(e.nome))}</span>
+        <div class="trilho" style="width:${r.total / topo * 100}%">
+          ${segs.filter(([k]) => r[k]).map(([k, cor, rot]) => `<span class="seg" tabindex="0" style="flex:${r[k]};background:${cor}"
+            data-dica-v="${plural(r[k], "tarefa", "tarefas")}" data-dica-r="${esc(e.nome.split(" ")[0])} · ${rot}" aria-label="${esc(e.nome)}: ${r[k]} ${rot.toLowerCase()}"></span>`).join("")}
+        </div>
+        <span class="taxa">${r.taxa === null ? "—" : `<b>${r.taxa}%</b>`}<span> no prazo</span></span>
+      </div>`).join("");
+    const ticks = Array.from({ length: topo / passo + 1 }, (_, i) => `<span>${i * passo}</span>`).join("");
+    document.getElementById("g-entregas-eixo").innerHTML = `<span></span><div>${ticks}</div><span></span>`;
+  }
+
+  function renderPrazos() {
+    const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    const dias = Array.from({ length: 7 }, (_, i) => { const d = new Date(hoje); d.setDate(d.getDate() + i); return d; });
+    const abertas = tarefas.filter(t => t.status !== "concluida" && !atrasada(t));
+    const dados = dias.map(d => ({ d, lista: abertas.filter(t => new Date(t.prazo).toDateString() === d.toDateString()) }));
+    const topo = Math.max(2, ...dados.map(x => x.lista.length));
+    const grades = Array.from({ length: topo }, (_, i) => `<div class="grade" style="bottom:${(i + 1) / topo * 100}%"></div>`).join("");
+    document.getElementById("g-prazos").innerHTML = grades + dados.map(({ d, lista }, i) => {
+      const n = lista.length;
+      const titulos = lista.map(t => esc(t.titulo)).join(" · ");
+      return `<div class="col ${n ? "" : "zero"}" tabindex="0"
+        data-dica-v="${plural(n, "tarefa", "tarefas")}" data-dica-r="${i === 0 ? "Hoje" : esc(fmtDiaLongo.format(d))}${titulos ? " · " + titulos : ""}"
+        aria-label="${esc(fmtDiaLongo.format(d))}: ${plural(n, "tarefa", "tarefas")}">
+        <span class="valor">${n}</span>
+        ${n ? `<span class="coluna" style="height:${n / topo * 100}%"></span>` : ""}
+      </div>`;
+    }).join("");
+    document.getElementById("g-prazos-dias").innerHTML = dados.map(({ d }, i) =>
+      `<span>${i === 0 ? "hoje" : fmtSemana.format(d).replace(".", "")}</span>`).join("");
+  }
+
+  // Filtro dos indicadores: aplica na tabela do próprio painel
+  let painelFiltro = "";
+  const TITULOS = { aberta: "Tarefas abertas", andamento: "Tarefas em andamento", concluida: "Tarefas concluídas", atrasada: "Tarefas atrasadas", noprazo: "Concluídas no prazo" };
+
+  function renderProximas() {
+    const lista = painelFiltro
+      ? filtrar(tarefas, painelFiltro).sort(porPrazo)
+      : tarefas.filter(t => t.status !== "concluida").sort(porPrazo).slice(0, 6);
+    document.getElementById("titulo-proximas").textContent = painelFiltro ? `${TITULOS[painelFiltro]} (${lista.length})` : "Próximas tarefas";
+    document.getElementById("limpar-filtro").hidden = !painelFiltro;
+    document.getElementById("proximas").innerHTML = lista.length ? lista.map(t => `
+      <tr><td><div class="t">${esc(t.titulo)}</div></td><td>${primeiroNome(t.responsavelId)}</td>
+      <td class="num ${atrasada(t) ? "prazo-atraso" : ""}">${prazoTexto(t)}</td><td>${statusTag(t)}</td></tr>`).join("")
+      : `<tr><td colspan="4" class="vazio">Nenhuma tarefa neste filtro.</td></tr>`;
+  }
+
+  function renderVencem() {
+    const lista = tarefas
+      .filter(t => t.status !== "concluida")
+      .filter(t => { const dif = new Date(t.prazo) - Date.now(); return dif > 0 && dif <= D; })
+      .sort(porPrazo);
+    document.getElementById("vencem").innerHTML = lista.length ? lista.map(t => `
+      <li><span>${esc(t.titulo)}</span><span class="quando">${prazoTexto(t)}</span>
+      <span class="resp">${nomeDe(t.responsavelId)} · ${STATUS[t.status]}</span></li>`).join("")
+      : `<li class="vazio" style="display:block">Nada vence nas próximas 24 horas.</li>`;
+  }
+
+  /* Tarefas */
+  function linhaTarefa(t, comResp = true) {
+    return `<tr>
+      <td><div class="t">${esc(t.titulo)}</div><div class="d">${esc(t.descricao)}</div></td>
+      ${comResp ? `<td>${primeiroNome(t.responsavelId)}</td>` : ""}
+      <td class="num ${atrasada(t) ? "prazo-atraso" : ""}">${prazoTexto(t)}</td>
+      <td class="col-urg">${urgTag(t)}</td>
+      <td>${statusTag(t)}</td>
+      <td class="col-origem origem">${t.origem === "whatsapp" ? "WhatsApp" : "Web"}</td>
+    </tr>`;
+  }
+
+  function renderTarefas() {
+    const q = document.getElementById("q").value.trim().toLowerCase();
+    const resp = document.getElementById("f-resp").value;
+    const lista = filtrar(tarefas, document.getElementById("f-status").value)
+      .filter(t => !q || t.titulo.toLowerCase().includes(q))
+      .filter(t => !resp || t.responsavelId === resp)
+      .sort(porPrazo);
+    document.getElementById("contagem").textContent = plural(lista.length, "tarefa", "tarefas");
+    document.getElementById("tarefas").innerHTML = lista.length ? lista.map(t => linhaTarefa(t)).join("")
+      : `<tr><td colspan="6" class="vazio">Nenhuma tarefa encontrada.</td></tr>`;
+  }
+
+  /* Por funcionário */
+  function renderEquipe() {
+    document.getElementById("equipe").innerHTML = equipe.map(e => {
+      const r = resumoDe(tarefas.filter(t => t.responsavelId === e.id));
+      return `<tr data-id="${e.id}" tabindex="0" aria-selected="${e.id === funcSelecionado}">
+        <td>${esc(e.nome)}<div class="origem">${esc(e.cargo)}</div></td>
+        <td class="n">${r.noPrazo}</td><td class="n">${r.comAtraso}</td><td class="n">${r.emAberto}</td>
+        <td class="n">${r.atrasadas}</td><td class="n">${r.taxa === null ? "—" : r.taxa + "%"}</td>
+      </tr>`;
+    }).join("");
+
+    const e = equipe.find(x => x.id === funcSelecionado);
+    const minhas = tarefas.filter(t => t.responsavelId === e.id).sort(porPrazo);
+    const r = resumoDe(minhas);
+    document.getElementById("func-nome").textContent = e.nome;
+    document.getElementById("func-contagem").textContent = plural(minhas.length, "tarefa", "tarefas");
+    document.getElementById("func-resumo").innerHTML = [
+      ["Em aberto", r.emAberto], ["Atrasadas", r.atrasadas], ["No prazo", r.noPrazo], ["Com atraso", r.comAtraso],
+      ["Cumprimento", r.taxa === null ? "—" : r.taxa + "%"],
+    ].map(([k, v]) => `<div><span class="k">${k}</span><span class="v">${v}</span></div>`).join("");
+    document.getElementById("func-tarefas").innerHTML = minhas.length ? minhas.map(t => linhaTarefa(t, false)).join("")
+      : `<tr><td colspan="5" class="vazio">Sem tarefas.</td></tr>`;
+  }
+
+  function render() {
+    renderKpis(); renderEntregas(); renderPrazos(); renderProximas(); renderVencem();
+    renderTarefas(); renderEquipe();
+  }
+
+  /* Navegação */
+  function mostrar(vista) {
+    if (!["painel", "tarefas", "funcionarios"].includes(vista)) vista = "painel";
+    document.querySelectorAll(".vista").forEach(v => v.hidden = v.id !== `vista-${vista}`);
+    document.querySelectorAll(".menu nav a").forEach(a => a.dataset.vista === vista ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", () => mostrar(location.hash.slice(1)));
+
+  document.getElementById("kpis").addEventListener("click", (ev) => {
+    const b = ev.target.closest(".kpi"); if (!b) return;
+    painelFiltro = painelFiltro === b.dataset.f ? "" : b.dataset.f;
+    renderKpis(); renderProximas();
+  });
+  document.getElementById("limpar-filtro").addEventListener("click", () => {
+    painelFiltro = ""; renderKpis(); renderProximas();
+  });
+  document.querySelectorAll("[data-ir]").forEach(b => b.addEventListener("click", () => {
+    document.getElementById("f-status").value = painelFiltro || "todas"; renderKpis(); renderTarefas();
+    location.hash = b.dataset.ir;
+  }));
+  document.getElementById("kpis-tarefas").addEventListener("click", (ev) => {
+    const b = ev.target.closest(".kpi"); if (!b) return;
+    const sel = document.getElementById("f-status");
+    sel.value = sel.value === b.dataset.f ? "todas" : b.dataset.f;
+    renderKpis(); renderTarefas();
+  });
+  ["q", "f-resp"].forEach(id => document.getElementById(id).addEventListener(id === "q" ? "input" : "change", renderTarefas));
+  document.getElementById("f-status").addEventListener("change", () => { renderKpis(); renderTarefas(); });
+  aoMudarTarefas(render);
+
+  const tabEquipe = document.getElementById("equipe");
+  const escolher = (ev) => { const tr = ev.target.closest("tr[data-id]"); if (!tr) return; funcSelecionado = tr.dataset.id; renderEquipe(); tabEquipe.querySelector(`[data-id="${funcSelecionado}"]`).focus(); };
+  tabEquipe.addEventListener("click", escolher);
+  tabEquipe.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); escolher(ev); } });
+
+  /* Dica dos gráficos (mouse e teclado) */
+  const dica = document.getElementById("dica");
+  function abrirDica(el, x, y) {
+    dica.replaceChildren();
+    const v = document.createElement("strong"); v.textContent = el.dataset.dicaV;
+    const r = document.createElement("span"); r.textContent = el.dataset.dicaR;
+    dica.append(v, r);
+    dica.classList.add("on");
+    const w = dica.offsetWidth, h = dica.offsetHeight;
+    dica.style.left = Math.min(x + 12, innerWidth - w - 8) + "px";
+    dica.style.top = Math.max(y - h - 12, 8) + "px";
+  }
+  document.addEventListener("pointermove", (ev) => {
+    const el = ev.target.closest("[data-dica-v]");
+    if (el) abrirDica(el, ev.clientX, ev.clientY); else dica.classList.remove("on");
+  });
+  document.addEventListener("focusin", (ev) => {
+    const el = ev.target.closest("[data-dica-v]");
+    if (!el) return dica.classList.remove("on");
+    const b = el.getBoundingClientRect(); abrirDica(el, b.left + b.width / 2, b.top);
+  });
+  document.addEventListener("focusout", () => dica.classList.remove("on"));
+
+  /* Cadastro */
+  const painel = document.getElementById("painel");
+  const form = document.getElementById("form");
+  const opcoesEquipe = equipe.map(e => `<option value="${e.id}">${esc(e.nome)}</option>`).join("");
+  form.responsavel.insertAdjacentHTML("beforeend", opcoesEquipe);
+  document.getElementById("f-resp").insertAdjacentHTML("beforeend", opcoesEquipe);
+
+  function localISO(d) { const z = new Date(d - d.getTimezoneOffset() * 6e4); return z.toISOString().slice(0, 16); }
+
+  document.querySelectorAll("[data-nova]").forEach(b => b.addEventListener("click", () => {
+    form.reset();
+    form.querySelectorAll(".invalido").forEach(el => el.classList.remove("invalido"));
+    const amanha = new Date(Date.now() + D); amanha.setHours(18, 0, 0, 0);
+    form.prazo.value = localISO(amanha);
+    form.prazo.min = localISO(new Date());
+    if (!document.getElementById("vista-funcionarios").hidden) form.responsavel.value = funcSelecionado;
+    painel.showModal();
+    form.titulo.focus();
+  }));
+  painel.addEventListener("click", (ev) => {
+    if (ev.target === painel || ev.target.closest("[data-fechar]")) painel.close();
+  });
+
+  form.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    const dados = Object.fromEntries(new FormData(form));
+    const regras = {
+      titulo: dados.titulo.trim(),
+      descricao: dados.descricao.trim(),
+      responsavel: dados.responsavel,
+      prazo: dados.prazo && new Date(dados.prazo) > Date.now(),
+    };
+    let primeiro = null;
+    for (const [campo, ok] of Object.entries(regras)) {
+      const el = form.querySelector(`[data-campo="${campo}"]`);
+      el.classList.toggle("invalido", !ok);
+      if (!ok && !primeiro) primeiro = form[campo];
+    }
+    if (primeiro) { primeiro.focus(); return; }
+
+    tarefas.push({
+      id: Math.max(...tarefas.map(t => t.id)) + 1,
+      titulo: regras.titulo, descricao: regras.descricao, responsavelId: dados.responsavel,
+      prazo: new Date(dados.prazo).toISOString(), urgencia: dados.urgencia, status: "aberta", origem: "web",
+      criadaEm: new Date().toISOString(),
+    });
+    salvarTarefas();
+    painel.close();
+    render();
+    avisar(`Tarefa criada para ${nomeDe(dados.responsavel)}. Aviso enviado na web e no WhatsApp.`);
+  });
+  form.addEventListener("input", (ev) => ev.target.closest(".invalido")?.classList.remove("invalido"));
+
+  let timer;
+  function avisar(msg) {
+    const a = document.getElementById("aviso");
+    a.textContent = msg; a.classList.add("on");
+    clearTimeout(timer); timer = setTimeout(() => a.classList.remove("on"), 3500);
+  }
+
+  /* Sair, com confirmação */
+  const confirmarSair = document.getElementById("confirmar-sair");
+  document.getElementById("sair").addEventListener("click", () => confirmarSair.showModal());
+  confirmarSair.addEventListener("close", () => {
+    if (confirmarSair.returnValue === "sair") location.href = "login.html";
+  });
+  confirmarSair.addEventListener("click", (ev) => { if (ev.target === confirmarSair) confirmarSair.close("cancelar"); });
+
+  document.getElementById("conta-nome").textContent = usuarioAtual.nome;
+  document.getElementById("conta-papel").textContent = usuarioAtual.cargo;
+  const hoje = fmtHoje.format(new Date());
+  document.querySelectorAll(".hoje").forEach(p => p.textContent = hoje.charAt(0).toUpperCase() + hoje.slice(1));
+  render();
+  mostrar(location.hash.slice(1));
+</script>
+</body>
+</html>
