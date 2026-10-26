@@ -23,11 +23,12 @@
   .menu nav a:hover { background: var(--tinta-800); }
   .menu nav a[aria-current="page"] { background: var(--tinta-900); color: var(--on-primary); font-weight: var(--fw-medium); }
   .menu nav svg { width: 16px; height: 16px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.6; }
-  .menu .conta { margin-top: auto; padding: 14px 20px 18px; border-top: 1px solid var(--tinta-800); display: grid; gap: 2px; }
-  .menu .conta b { font-weight: var(--fw-medium); color: var(--on-primary); }
-  .menu .conta span { font-size: var(--fs-xs); color: var(--tinta-200); }
-  .menu .sair { margin-top: 10px; justify-self: start; background: none; border: 1px solid var(--tinta-500); color: var(--tinta-100); border-radius: var(--radius-sm); padding: 6px 12px; cursor: pointer; }
-  .menu .sair:hover { background: var(--tinta-800); }
+  .menu .conta { margin-top: auto; padding: 14px 12px 16px 20px; border-top: 1px solid var(--tinta-800); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 8px; }
+  .menu .conta b { font-weight: var(--fw-medium); color: var(--on-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .menu .conta span { font-size: var(--fs-xs); color: var(--tinta-200); grid-column: 1; }
+  .menu .sair { grid-column: 2; grid-row: 1 / span 2; display: grid; place-items: center; width: 34px; height: 34px; background: none; border: 0; color: var(--tinta-200); border-radius: var(--radius-sm); cursor: pointer; }
+  .menu .sair:hover { background: var(--tinta-800); color: var(--on-primary); }
+  .menu .sair svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 
   .conteudo { padding: 0 28px 64px; min-width: 0; }
   .vista { max-width: 1160px; }
@@ -140,26 +141,18 @@
   .resumo .k { color: var(--text-muted); display: block; }
   .resumo .v { font-size: var(--fs-lg); font-weight: var(--fw-semibold); }
 
-  /* Entrar */
-  .entrar { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; }
-  .entrar .cartao { width: min(420px, 100%); padding: 28px; }
-  .entrar h1 { margin: 0; font-size: var(--fs-xl); font-weight: var(--fw-semibold); color: var(--primary); }
-  .entrar p { color: var(--text-muted); margin: 4px 0 20px; }
-  .perfis { display: grid; gap: 8px; margin-bottom: 20px; }
-  .perfil { display: grid; grid-template-columns: auto 1fr; gap: 0 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--linha-forte); border-radius: var(--radius-sm); cursor: pointer; background: var(--branco); }
-  .perfil small { grid-column: 2; color: var(--text-muted); }
-  .perfil:has(input:checked) { border-color: var(--primary); background: var(--tinta-100); }
-  .perfil:has(input:disabled) { cursor: not-allowed; opacity: .6; }
-  .entrar .btn { width: 100%; padding: 10px; }
-
-  /* Painel de cadastro */
-  dialog { border: 0; padding: 0; margin: 0 0 0 auto; height: 100%; max-height: none; width: min(460px, 100%); background: var(--surface); color: var(--text); border-left: 1px solid var(--linha-forte); }
-  dialog::backdrop { background: rgb(15 29 48 / .35); }
-  dialog form { display: flex; flex-direction: column; height: 100%; }
+  /* Pop-ups */
+  dialog { border: 1px solid var(--linha-forte); border-radius: var(--radius-md); padding: 0; width: min(560px, calc(100% - 32px)); max-height: calc(100vh - 48px); background: var(--surface); color: var(--text); box-shadow: 0 12px 32px rgb(15 29 48 / .18); }
+  dialog::backdrop { background: rgb(15 29 48 / .4); }
+  dialog form { display: flex; flex-direction: column; max-height: calc(100vh - 50px); }
+  dialog.confirmar { width: min(400px, calc(100% - 32px)); }
+  dialog.confirmar .d-body p { margin: 0; color: var(--grafite-700); }
+  .btn-perigo { background: var(--status-atrasada); color: var(--branco); }
+  .btn-perigo:hover { filter: brightness(.92); }
   .d-head { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
   .d-head h2 { font-size: var(--fs-lg); }
   .d-body { padding: 20px; overflow: auto; flex: 1; display: grid; gap: 16px; align-content: start; }
-  .d-foot { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; background: var(--papel); }
+  .d-foot { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; background: var(--papel); border-radius: 0 0 var(--radius-md) var(--radius-md); }
   label { display: grid; gap: 6px; font-weight: var(--fw-medium); }
   .campo { border: 1px solid var(--linha-forte); border-radius: var(--radius-sm); padding: 8px 10px; background: var(--branco); font-weight: var(--fw-regular); width: 100%; }
   textarea.campo { resize: vertical; min-height: 84px; }
@@ -196,9 +189,8 @@
     .menu .orgao { display: none; }
     .menu nav { display: flex; overflow-x: auto; padding: 0 8px 8px; width: 100%; order: 3; }
     .menu nav a { white-space: nowrap; }
-    .menu .conta { margin: 0 0 0 auto; border: 0; padding: 8px 16px; }
+    .menu .conta { margin: 0 0 0 auto; border: 0; padding: 6px 10px; }
     .menu .conta b, .menu .conta span { display: none; }
-    .menu .sair { margin: 0; }
     .conteudo { padding: 0 16px 48px; }
     .head { flex-direction: column; align-items: stretch; }
     .kpis, .resumo { grid-template-columns: 1fr 1fr; }
@@ -211,16 +203,6 @@
 </style>
 </head>
 <body>
-
-<!-- Entrar: login simplificado com seletor de usuário -->
-<section class="entrar" id="tela-entrar" hidden>
-  <form class="cartao caixa" id="form-entrar">
-    <h1>Pauta</h1>
-    <p>Escolha o perfil para entrar.</p>
-    <div class="perfis" id="perfis"></div>
-    <button class="btn btn-1" type="submit">Entrar</button>
-  </form>
-</section>
 
 <div class="app" id="app">
   <aside class="menu">
@@ -240,7 +222,9 @@
     <div class="conta">
       <b id="conta-nome"></b>
       <span id="conta-papel"></span>
-      <button class="sair" id="sair">Sair</button>
+      <button class="sair" id="sair" aria-label="Sair" title="Sair">
+        <svg viewBox="0 0 20 20"><path d="M8 4H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/><path d="M12 6.5 15.5 10 12 13.5"/><path d="M15.5 10H8"/></svg>
+      </button>
     </div>
   </aside>
 
@@ -375,6 +359,17 @@
     <div class="d-foot">
       <button type="button" class="btn btn-2" data-fechar>Cancelar</button>
       <button type="submit" class="btn btn-1">Criar tarefa</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="confirmar" id="confirmar-sair" aria-labelledby="sair-titulo">
+  <form method="dialog">
+    <div class="d-head"><h2 id="sair-titulo">Sair do Pauta?</h2></div>
+    <div class="d-body"><p>Você vai voltar para a tela de login. As tarefas continuam salvas.</p></div>
+    <div class="d-foot">
+      <button class="btn btn-2" value="cancelar" autofocus>Cancelar</button>
+      <button class="btn btn-perigo" value="sair">Sair</button>
     </div>
   </form>
 </dialog>
@@ -714,35 +709,20 @@
     clearTimeout(timer); timer = setTimeout(() => a.classList.remove("on"), 3500);
   }
 
-  /* Entrar e sair */
-  const telaEntrar = document.getElementById("tela-entrar");
-  const app = document.getElementById("app");
-  document.getElementById("perfis").innerHTML = usuarios.map(u => `
-    <label class="perfil"><input type="radio" name="perfil" value="${u.id}" ${u.papel === "gestor" ? "checked" : "disabled"}>
-      <span>${esc(u.nome)}</span><small>${esc(u.cargo)}${u.papel === "funcionario" ? " · quadro do funcionário em breve" : ""}</small></label>`).join("");
-
-  function entrar(u) {
-    usuarioAtual = u;
-    document.getElementById("conta-nome").textContent = u.nome;
-    document.getElementById("conta-papel").textContent = u.cargo;
-    telaEntrar.hidden = true; app.hidden = false;
-    mostrar(location.hash.slice(1));
-  }
-  document.getElementById("sair").addEventListener("click", () => {
-    app.hidden = true; telaEntrar.hidden = false;
-    telaEntrar.querySelector("input:checked")?.focus();
+  /* Sair, com confirmação */
+  const confirmarSair = document.getElementById("confirmar-sair");
+  document.getElementById("sair").addEventListener("click", () => confirmarSair.showModal());
+  confirmarSair.addEventListener("close", () => {
+    if (confirmarSair.returnValue === "sair") location.href = "login.html";
   });
-  document.getElementById("form-entrar").addEventListener("submit", (ev) => {
-    ev.preventDefault();
-    const id = new FormData(ev.target).get("perfil");
-    entrar(usuarios.find(u => u.id === id));
-    avisar(`Olá, ${usuarioAtual.nome.split(" ")[0]}.`);
-  });
+  confirmarSair.addEventListener("click", (ev) => { if (ev.target === confirmarSair) confirmarSair.close("cancelar"); });
 
+  document.getElementById("conta-nome").textContent = usuarioAtual.nome;
+  document.getElementById("conta-papel").textContent = usuarioAtual.cargo;
   const hoje = fmtHoje.format(new Date());
   document.querySelectorAll(".hoje").forEach(p => p.textContent = hoje.charAt(0).toUpperCase() + hoje.slice(1));
   render();
-  entrar(usuarioAtual);
+  mostrar(location.hash.slice(1));
 </script>
 </body>
 </html>
