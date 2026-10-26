@@ -23,8 +23,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      # As telas do protótipo carregam ../design/, então as duas pastas vão lado a lado.
+      # A raiz abre o login do protótipo; o demo com painel MCP fica em /demo/.
+      - name: Monta o site
+        run: |
+          mkdir _site
+          cp -r prototipo design _site/
+          cp -r site _site/demo
+          cat > _site/index.html <<'EOF'
+          <!doctype html>
+          <meta charset="utf-8">
+          <title>Pauta</title>
+          <meta http-equiv="refresh" content="0; url=prototipo/login.html">
+          <a href="prototipo/login.html">Abrir o Pauta</a>
+          EOF
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: _site
       - id: deploy
         uses: actions/deploy-pages@v4
